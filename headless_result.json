@@ -1,0 +1,50 @@
+{
+  "login": {
+    "url": "http://127.0.0.1:8080/jehat/login",
+    "status_assets": {
+      "http://127.0.0.1:8080/static/assets/js/bootstrap.min.js": 200,
+      "http://127.0.0.1:8080/static/assets/js/jquery-1.10.2.js": 200,
+      "http://127.0.0.1:8080/static/js/cdn.min.js": 200,
+      "http://127.0.0.1:8080/static/assets/js/paper-dashboard.js": 200,
+      "http://127.0.0.1:8080/static/assets/js/bootstrap-notify.js": 200,
+      "http://127.0.0.1:8080/static/assets/js/chartist.min.js": 200,
+      "http://127.0.0.1:8080/static/js/admin.js": 200
+    },
+    "has_login_button": true,
+    "has_chart_element": false,
+    "html_snippet": "<!DOCTYPE html><html lang=\"tr\"><head>\n    <meta charset=\"utf-8\">\n    <link rel=\"apple-touch-icon\" sizes=\"76x76\" href=\"/static/assets/img/apple-icon.png\">\n    <link rel=\"icon\" type=\"image/png\" sizes=\"96x96\" href=\"/static/assets/img/favicon.png\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n    <title>Yönetim Paneli - Giriş</title>\n    <meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\" name=\"viewport\">\n    <meta name=\"viewport\" content=\"width=device-width\">\n    <link href=\"/static/assets/css/bootstrap.min.css\" rel=\"stylesheet\">\n    <link href=\"/static/assets/css/animate.min.css\" rel=\"stylesheet\">\n    <link href=\"/static/assets/css/paper-dashboard.css\" rel=\"stylesheet\">\n    <link href=\"https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css\" rel=\"stylesheet\">\n    <link href=\"https://fonts.googleapis.com/css?family=Muli:400,300\" rel=\"stylesheet\" type=\"text/css\">\n    <link href=\"/static/assets/css/themify-icons.css\" rel=\"stylesheet\">\n    <style>\n        .login-wrapper {\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            min-height: 100vh;\n            background: #f4f3ef;\n        }\n\n        .login-card {\n            width: 100%;\n            max-width: 400px;\n            margin: 0 15px;\n        }\n    </style>\n</head>\n\n<body style=\"\">\n    <div class=\"login-wrapper\" x-data=\"{ username: '', password: '', loading: false, error: '' }\">\n        <div class=\"login-card\">\n            <div class=\"card\">\n                <div class=\"content\">\n                    <div class=\"text-center mb-4\">\n                        <h3 style=\"color: #7A9E9F;\">Yönetim Paneli</h3>\n                    </div>\n                                        <form @submit.prevent=\"handleLogin\" action=\"/jehat/login\" method=\"POST\" x-ref=\"form\">\n                        <div class=\"row\">\n                            <div class=\"col-md-12\">\n                                <div class",
+    "console": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      }
+    ],
+    "page_errors": []
+  },
+  "dashboard": {
+    "url": "http://127.0.0.1:8080/jehat/dashboard",
+    "status_assets": {
+      "http://127.0.0.1:8080/static/assets/js/jquery-1.10.2.js": 200,
+      "http://127.0.0.1:8080/static/assets/js/bootstrap.min.js": 200,
+      "http://127.0.0.1:8080/static/assets/js/paper-dashboard.js": 200,
+      "http://127.0.0.1:8080/static/assets/js/bootstrap-notify.js": 200,
+      "http://127.0.0.1:8080/static/assets/js/chartist.min.js": 200,
+      "http://127.0.0.1:8080/static/js/admin.js": 200,
+      "http://127.0.0.1:8080/static/js/cdn.min.js": 200
+    },
+    "has_login_button": false,
+    "has_chart_element": false,
+    "html_snippet": "<!DOCTYPE html><html lang=\"tr\"><head>\n    <meta charset=\"utf-8\">\n    <link rel=\"apple-touch-icon\" sizes=\"76x76\" href=\"/static/assets/img/apple-icon.png\">\n    <link rel=\"icon\" type=\"image/png\" sizes=\"96x96\" href=\"/static/assets/img/favicon.png\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n    <title>Yönetim Paneli</title>\n    <meta content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\" name=\"viewport\">\n    <meta name=\"viewport\" content=\"width=device-width\">\n    <!-- Bootstrap core CSS     -->\n    <link href=\"/static/assets/css/bootstrap.min.css\" rel=\"stylesheet\">\n    <!-- Animation library for notifications   -->\n    <link href=\"/static/assets/css/animate.min.css\" rel=\"stylesheet\">\n    <!--  Paper Dashboard core CSS    -->\n    <link href=\"/static/assets/css/paper-dashboard.css\" rel=\"stylesheet\">\n    <link href=\"https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css\" rel=\"stylesheet\">\n    <link href=\"https://fonts.googleapis.com/css?family=Muli:400,300\" rel=\"stylesheet\" type=\"text/css\">\n    <link href=\"/static/assets/css/themify-icons.css\" rel=\"stylesheet\">\n    <style>\n        html, body {\n            overflow-x: hidden;\n        }\n    </style>\n<script>\n(function(){\n    const _origFetch = window.fetch;\n    window.fetch = function(url, opts) {\n        const method = (opts && opts.method) || 'GET';\n        console.log('[FETCH]', method, url);\n        return _origFetch.apply(this, arguments);\n    };\n})();\n</script>\n</head>\n\n<body x-data=\"adminApp\" style=\"\">\n\n    <div class=\"wrapper\">\n        <style>\n.sidebar-toggle {\n    background-color: transparent;\n    border: 0;\n    padding: 10px;\n    transition: all 0.3s ease;\n}\n\n.sidebar-toggle:hover {\n    transform: rotate(180deg);\n}\n\n.sidebar-toggle .ti-menu {\n    font-size: 1.5rem;\n}\n\n.sidebar-mini {\n    width: 80px;\n    transition: width 0.3s ease;\n}\n\n.sidebar-mini .sidebar-wrapper {\n    width: 72px;\n    transition: width 0.3s ease;\n}\n\n.sidebar-wrapper .lo",
+    "console": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      }
+    ],
+    "page_errors": []
+  }
+}

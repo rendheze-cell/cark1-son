@@ -1,0 +1,487 @@
+#!/usr/bin/env python3
+"""
+Tokmanni Reverse Proxy Server
+==============================
+- Statik dosyaları yerel wget kopyasından servis eder
+- Admin paneli sayfalarını yerel kopyadan servis eder
+- API isteklerini (fetch/XHR) canlı siteye proxy'ler
+- Login session'ını otomatik yönetir
+- HTML içindeki domain URL'lerini otomatik rewrite eder
+"""
+
+import os
+import re
+import json
+import time
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.parse import urlparse, unquote, urlencode
+import http.client
+import ssl
+
+# ============================================
+# YAPILANDIRMA
+# ============================================
+PORT = 8080
+ORIGINAL_DOMAIN = "tokmanni.palkintohakemus.fi"
+ORIGINAL_BASE = f"https://{ORIGINAL_DOMAIN}"
+
+# Yerel dosya kaynakları (wget kopyaları)
+SITE_ROOT = "/root/tokmanni.palkintohakemus.fi"
+CAPTURED_PAGES = "/root/cark1/site-capture/pages"
+
+# Admin giriş bilgileri
+ADMIN_USERNAME = "denez"
+ADMIN_PASSWORD = "sanane21"
+
+# ============================================
+# SESSION YÖNETİCİSİ
+# ============================================
+class SessionManager:
+    """Canlı site ile session yönetimi"""
+    
+    def __init__(self):
+        self.cookie = None
+        self.last_login = 0
+        self.lock = threading.Lock()
+    
+    def _do_request(self, method, path, body=None, headers=None, follow_redirects=True):
+        """HTTPS isteği yapar"""
+        ctx = ssl.create_default_context()
+        conn = http.client.HTTPSConnection(ORIGINAL_DOMAIN, context=ctx, timeout=15)
+        
+        hdrs = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+            'Accept': '*/*',
+        }
+        if headers:
+            hdrs.update(headers)
+        if self.cookie:
+            hdrs['Cookie'] = f'ci_session={self.cookie}'
+        
+        try:
+            conn.request(method, path, body=body, headers=hdrs)
+            resp = conn.getresponse()
+            
+            # Cookie güncelleme
+            for header_name, header_value in resp.getheaders():
+                if header_name.lower() == 'set-cookie':
+                    if 'ci_session=' in header_value:
+                        self.cookie = header_value.split('ci_session=')[1].split(';')[0]
+            
+            data = resp.read()
+            
+            # Redirect takip et
+            if follow_redirects and resp.status in (301, 302, 303, 307):
+                location = resp.getheader('Location', '')
+                if location:
+                    parsed = urlparse(location)
+                    new_path = parsed.path
+                    if parsed.query:
+                        new_path += '?' + parsed.query
+                    conn.close()
+                    return self._do_request('GET', new_path, follow_redirects=True)
+            
+            conn.close()
+            return resp.status, dict(resp.getheaders()), data
+        except Exception as e:
+            try:
+                conn.close()
+            except:
+                pass
+            raise e
+    
+    def login(self):
+        """Admin paneline giriş yapar"""
+        with self.lock:
+            now = time.time()
+            # Son 60 saniye içinde login yaptıysa tekrar yapma
+            if now - self.last_login < 60:
+                return True
+            
+            print(f"[SESSION] Logging in as {ADMIN_USERNAME}...")
+            body = urlencode({
+                'username': ADMIN_USERNAME,
+                'password': ADMIN_PASSWORD
+            })
+            
+            try:
+                status, headers, data = self._do_request('POST', '/jehat/login', body=body, headers={
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                })
+                
+                text = data.decode('utf-8', errors='replace')
+                if 'Yönetim Paneli - Giriş' not in text and status == 200:
+                    self.last_login = now
+                    print(f"[SESSION] Login OK! Cookie: {self.cookie[:20]}...")
+                    return True
+                else:
+                    print(f"[SESSION] Login FAILED! Status: {status}")
+                    return False
+            except Exception as e:
+                print(f"[SESSION] Login ERROR: {e}")
+                return False
+    
+    def proxy_request(self, method, path, body=None, request_headers=None):
+        """Canlı siteye istek proxy'ler"""
+        headers = {}
+        if request_headers:
+            # Bazı header'ları aktar
+            for h in ['Content-Type', 'Accept', 'X-Requested-With', 'Referer']:
+                val = request_headers.get(h)
+                if val:
+                    headers[h] = val
+        
+        try:
+            status, resp_headers, data = self._do_request(method, path, body=body, headers=headers)
+            
+            # Session expired kontrolü
+            if status == 302:
+                location = resp_headers.get('Location', resp_headers.get('location', ''))
+                if '/jehat' == urlparse(location).path or location.endswith('/jehat'):
+                    print(f"[PROXY] Session expired, re-logging in...")
+                    self.login()
+                    status, resp_headers, data = self._do_request(method, path, body=body, headers=headers)
+            
+            return status, resp_headers, data
+        except Exception as e:
+            print(f"[PROXY] Error proxying {method} {path}: {e}")
+            return 502, {}, b'Proxy Error'
+
+
+session_mgr = SessionManager()
+
+
+# ============================================
+# CONTENT TYPE MAPPING
+# ============================================
+EXT_MAP = {
+    '.html': 'text/html; charset=utf-8',
+    '.htm': 'text/html; charset=utf-8',
+    '.css': 'text/css; charset=utf-8',
+    '.js': 'application/javascript; charset=utf-8',
+    '.json': 'application/json; charset=utf-8',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.svg': 'image/svg+xml',
+    '.ico': 'image/x-icon',
+    '.woff': 'font/woff',
+    '.woff2': 'font/woff2',
+    '.ttf': 'font/ttf',
+    '.eot': 'application/vnd.ms-fontobject',
+    '.txt': 'text/plain; charset=utf-8',
+    '.xml': 'text/xml; charset=utf-8',
+}
+
+def guess_type(path):
+    """Content-Type tahmin et"""
+    # ? parametreli font dosyaları
+    clean = path.split('?')[0]
+    _, ext = os.path.splitext(clean)
+    ext = ext.lower()
+    if ext in EXT_MAP:
+        return EXT_MAP[ext]
+    if not ext:
+        return 'text/html; charset=utf-8'
+    return 'application/octet-stream'
+
+
+FETCH_INTERCEPTOR = """
+<script>
+// Fetch Interceptor - Tüm fetch isteklerini loglar ve sunucuya bildirir
+(function() {
+    const _origFetch = window.fetch;
+    window.fetch = function(url, opts) {
+        const method = (opts && opts.method) || 'GET';
+        console.log('[FETCH INTERCEPT]', method, url);
+        // Sunucuya bildir
+        navigator.sendBeacon('/__log_api', JSON.stringify({url: url, method: method, time: Date.now()}));
+        return _origFetch.apply(this, arguments);
+    };
+    // XMLHttpRequest interceptor
+    const _origOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url) {
+        console.log('[XHR INTERCEPT]', method, url);
+        navigator.sendBeacon('/__log_api', JSON.stringify({url: url, method: method, time: Date.now(), type: 'xhr'}));
+        return _origOpen.apply(this, arguments);
+    };
+})();
+</script>
+"""
+
+def rewrite_html(content, local_host):
+    """HTML içindeki orijinal domain URL'lerini yerel URL'lere çevir + interceptor inject"""
+    text = content
+    # https://tokmanni.palkintohakemus.fi -> relative veya localhost
+    text = text.replace(f'https://{ORIGINAL_DOMAIN}', '')
+    text = text.replace(f'http://{ORIGINAL_DOMAIN}', '')
+    text = text.replace(ORIGINAL_DOMAIN, '')
+    # Fetch interceptor inject et (head tag'ından hemen sonra)
+    if '<head>' in text:
+        text = text.replace('<head>', '<head>' + FETCH_INTERCEPTOR, 1)
+    elif '<HEAD>' in text:
+        text = text.replace('<HEAD>', '<HEAD>' + FETCH_INTERCEPTOR, 1)
+    return text
+
+
+# ============================================
+# HTTP HANDLER
+# ============================================
+class ProxyHandler(BaseHTTPRequestHandler):
+    
+    def _get_local_host(self):
+        host = self.headers.get('Host', f'localhost:{PORT}')
+        return f'http://{host}'
+    
+    def _send_file(self, content, content_type, status=200):
+        """Dosya gönder"""
+        if isinstance(content, str):
+            content = content.encode('utf-8')
+        self.send_response(status)
+        self.send_header('Content-Type', content_type)
+        self.send_header('Content-Length', len(content))
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Cache-Control', 'no-cache')
+        self.end_headers()
+        self.wfile.write(content)
+    
+    def _send_json(self, data, status=200):
+        """JSON yanıt gönder"""
+        content = json.dumps(data, ensure_ascii=False).encode('utf-8')
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.send_header('Content-Length', len(content))
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(content)
+    
+    def _try_local_file(self, path):
+        """Yerel dosya sisteminden servis etmeyi dene"""
+        # Path temizle
+        clean = unquote(path.split('?')[0])
+        if clean != '/' and clean.endswith('/'):
+            clean = clean.rstrip('/')
+        
+        # 1. Statik dosyalar (CSS, JS, images)
+        if clean.startswith('/static/'):
+            file_path = os.path.join(SITE_ROOT, clean.lstrip('/'))
+            if os.path.isfile(file_path):
+                return file_path, guess_type(file_path)
+            # ? parametreli font dosyaları
+            for f in os.listdir(os.path.dirname(file_path)) if os.path.isdir(os.path.dirname(file_path)) else []:
+                if f.startswith(os.path.basename(file_path).split('?')[0]):
+                    return os.path.join(os.path.dirname(file_path), f), guess_type(f)
+        
+        # 2. Admin panel sayfaları (/jehat/...)
+        if clean.startswith('/jehat/'):
+            sub = clean[7:]  # '/jehat/' kısmını çıkar
+            if not sub:
+                sub = 'login'
+            
+            # Captured pages'den kontrol et
+            safe = sub.replace('/', '_')
+            captured = os.path.join(CAPTURED_PAGES, f"{safe}.html")
+            if os.path.isfile(captured):
+                return captured, 'text/html; charset=utf-8'
+            
+            # wget kopyasından kontrol et
+            wget_path = os.path.join(SITE_ROOT, 'jehat', sub)
+            if os.path.isfile(wget_path):
+                return wget_path, 'text/html; charset=utf-8'
+        
+        # 3. Kök sayfalar
+        if clean == '/' or clean == '':
+            idx = os.path.join(CAPTURED_PAGES, 'index.html')
+            if os.path.isfile(idx):
+                return idx, 'text/html; charset=utf-8'
+        
+        # 4. robots.txt
+        if clean == '/robots.txt':
+            rp = os.path.join(SITE_ROOT, 'robots.txt')
+            if os.path.isfile(rp):
+                return rp, 'text/plain; charset=utf-8'
+        
+        return None, None
+    
+    def _proxy_to_live(self, method='GET', body=None):
+        """İsteği canlı siteye proxy'le"""
+        path = self.path
+        
+        # Header'ları topla
+        req_headers = {}
+        for h in ['Content-Type', 'Accept', 'X-Requested-With', 'Referer']:
+            val = self.headers.get(h)
+            if val:
+                req_headers[h] = val
+        
+        status, resp_headers, data = session_mgr.proxy_request(method, path, body=body, request_headers=req_headers)
+        
+        # Yanıtı gönder
+        content_type = ''
+        for k, v in resp_headers.items() if isinstance(resp_headers, dict) else []:
+            if k.lower() == 'content-type':
+                content_type = v
+        
+        # HTML ise rewrite yap
+        if 'text/html' in content_type:
+            text = data.decode('utf-8', errors='replace')
+            text = rewrite_html(text, self._get_local_host())
+            data = text.encode('utf-8')
+        
+        self._send_file(data, content_type or 'application/octet-stream', status)
+    
+    def do_OPTIONS(self):
+        """CORS preflight"""
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+        self.end_headers()
+    
+    def do_GET(self):
+        path = unquote(self.path.split('?')[0])
+        
+        # Favicon
+        if path == '/favicon.ico':
+            fav = os.path.join(SITE_ROOT, 'static/assets/img/favicon.png')
+            if os.path.isfile(fav):
+                with open(fav, 'rb') as f:
+                    self._send_file(f.read(), 'image/png')
+                return
+        
+        # Adım 1: Statik dosyalar - her zaman yerel
+        if path.startswith('/static/'):
+            file_path, content_type = self._try_local_file(path)
+            if file_path:
+                with open(file_path, 'rb') as f:
+                    self._send_file(f.read(), content_type)
+                return
+            # Statik dosya yoksa canlıya git
+            print(f"[PROXY] Static not found locally: {path}")
+            self._proxy_to_live('GET')
+            return
+        
+        # Adım 2: Admin panel HTML sayfaları - bilinen sayfalar yerelden
+        if path.startswith('/jehat/'):
+            sub = path[7:].rstrip('/')
+            # Bilinen HTML sayfaları (menü items)
+            known_pages = [
+                'dashboard', 'bank/list', 'bank/add', 'onlineUsers', 
+                'wheelSettings', 'countrySettings', 'languages/list',
+                'userManagement', 'activityLogs', 'bannedList', 
+                'adminSettings', 'export', 'truncate',
+            ]
+            # language edit sayfaları
+            for lang in ['fi','se','no','dk','es','at','au','ie','hk']:
+                known_pages.append(f'languages/edit/{lang}')
+            
+            if sub in known_pages or sub == '' or sub == 'login':
+                file_path, content_type = self._try_local_file(path)
+                if file_path:
+                    try:
+                        with open(file_path, 'rb') as f:
+                            content = f.read()
+                        if 'text/html' in content_type:
+                            text = content.decode('utf-8', errors='replace')
+                            text = rewrite_html(text, self._get_local_host())
+                            content = text.encode('utf-8')
+                        self._send_file(content, content_type)
+                        return
+                    except Exception as e:
+                        print(f"[ERROR] {e}")
+            
+            # Bilinmeyen /jehat/ path'leri -> her zaman canlıya proxy'le (API istekleri)
+            print(f"[PROXY->LIVE] GET {self.path}")
+            self._proxy_to_live('GET')
+            return
+        
+        # Adım 3: Kök sayfalar
+        file_path, content_type = self._try_local_file(path)
+        if file_path:
+            try:
+                with open(file_path, 'rb') as f:
+                    content = f.read()
+                if 'text/html' in content_type:
+                    text = content.decode('utf-8', errors='replace')
+                    text = rewrite_html(text, self._get_local_host())
+                    content = text.encode('utf-8')
+                self._send_file(content, content_type)
+                return
+            except Exception as e:
+                print(f"[ERROR] {e}")
+        
+        # Hiçbir şey bulunamadı - canlıya proxy'le
+        print(f"[PROXY] GET {self.path} -> live site")
+        self._proxy_to_live('GET')
+    
+    def do_POST(self):
+        # POST body'sini oku
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length) if content_length > 0 else None
+        
+        path = unquote(self.path.split('?')[0])
+        
+        # API log endpoint
+        if path == '/__log_api':
+            try:
+                data = json.loads(body.decode('utf-8')) if body else {}
+                print(f"[API-LOG] {data.get('method','?')} {data.get('url','?')} ({data.get('type','fetch')})")
+            except:
+                pass
+            self._send_file(b'ok', 'text/plain')
+            return
+        
+        # Login isteği - özel işle
+        if path == '/jehat/login':
+            print(f"[PROXY] POST /jehat/login -> live site")
+            session_mgr.login()
+        
+        # Tüm POST istekleri canlıya gider
+        print(f"[PROXY->LIVE] POST {self.path}")
+        self._proxy_to_live('POST', body)
+    
+    def log_message(self, format, *args):
+        """İstek loglarını göster"""
+        # Statik dosyalar için sessiz ol
+        msg = format % args if args else format
+        if '/static/' not in str(msg):
+            print(f"[{self.log_date_time_string()}] {msg}")
+
+
+# ============================================
+# BAŞLATMA
+# ============================================
+def main():
+    # Başlangıçta login yap
+    print("=" * 60)
+    print("  Tokmanni Reverse Proxy Server")
+    print(f"  http://localhost:{PORT}")
+    print(f"  Target: {ORIGINAL_BASE}")
+    print(f"  Local files: {SITE_ROOT}")
+    print(f"  Captured pages: {CAPTURED_PAGES}")
+    print("=" * 60)
+    
+    print("\n[INIT] Performing initial login...")
+    if session_mgr.login():
+        print("[INIT] Login successful!")
+    else:
+        print("[INIT] Login failed! API proxy may not work.")
+    
+    print(f"\n[INIT] Starting server on port {PORT}...")
+    server = HTTPServer(('0.0.0.0', PORT), ProxyHandler)
+    
+    print(f"\n  Admin Panel: http://localhost:{PORT}/jehat/dashboard")
+    print(f"  Login Page:  http://localhost:{PORT}/jehat")
+    print(f"\n  Press Ctrl+C to stop.\n")
+    
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[SHUTDOWN] Server stopping...")
+        server.server_close()
+
+
+if __name__ == '__main__':
+    main()
